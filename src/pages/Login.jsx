@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
+  const [username, setUsername] = useState(""); // NEW
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,32 +15,48 @@ function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) navigate("/");
-  }, [user, navigate]);
+  // Redirect if already logged in
 
+
+  // Clear error + username when switching modes
   useEffect(() => {
-    // Clear error when mode changes
     setError("");
+    setUsername("");
   }, [isLogin]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setFormLoading(true);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setFormLoading(true);
 
-    try {
-      if (isLogin) {
-        await signIn(email, password);
-      } else {
-        await signUp(email, password);
+  try {
+    if (isLogin) {
+      await signIn(email, password);
+      navigate("/");
+      return;
+    } else {
+      if (!username.trim()) {
+        throw new Error("Username is required");
       }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setFormLoading(false);
+
+      const result = await signUp(email, password, username);
+
+      if (result.status === "authenticated") {
+        navigate("/");
+        return;
+      }
+
+      if (result.status === "pending_confirmation") {
+        setError("Check your email to confirm your account.");
+        return;
+      }
     }
-  };
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setFormLoading(false);
+  }
+};
 
   const handleGoogleSignIn = async () => {
     setError("");
@@ -61,9 +78,11 @@ function Login() {
       </div>
     );
   }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-black text-white flex items-center justify-center px-6">
-      <div className="w-full max-w-5xl grid md:grid-cols-2 rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(255,0,0,0.15)] border border-zinc-800">
+      <div className="w-full max-w-5xl grid md:grid-cols-2 rounded-b-3xl overflow-hidden shadow-[0_0_80px_rgba(255,0,0,0.15)] border border-zinc-800">
+        
         {/* LEFT SIDE */}
         <div className="hidden md:flex flex-col justify-between p-14 bg-gradient-to-br from-red-600 via-red-700 to-black relative">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
@@ -104,7 +123,6 @@ function Login() {
             disabled={isGoogleLoading}
             className="w-full flex items-center justify-center gap-3 py-3 mb-6 bg-white text-black rounded-xl font-medium hover:shadow-lg hover:scale-[1.02] active:scale-[0.99] transition-all duration-200 disabled:opacity-60"
           >
-            {/* Official Google SVG */}
             <svg width="20" height="20" viewBox="0 0 48 48">
               <path
                 fill="#EA4335"
@@ -135,12 +153,23 @@ function Login() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            
+            {/* USERNAME FIELD (ONLY FOR SIGNUP) */}
+            {!isLogin && (
+              <div>
+                <input
+                  type="text"
+                  placeholder="Username"
+                  className="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+
             <div>
-              <label htmlFor="email" className="sr-only">
-                Email
-              </label>
               <input
-                id="email"
                 type="email"
                 placeholder="Email"
                 autoComplete="email"
@@ -152,14 +181,10 @@ function Login() {
             </div>
 
             <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
               <input
-                id="password"
                 type="password"
                 placeholder="Password"
-                autoComplete="current-password"
+                autoComplete={isLogin ? "current-password" : "new-password"}
                 className="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

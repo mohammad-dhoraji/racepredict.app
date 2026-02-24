@@ -4,14 +4,14 @@ import PageWrapper from "../components/PageWrapper";
 function Rules() {
   return (
     <PageWrapper>
-      <div className="min-h-screen bg-neutral-800 text-white px-6 py-10 w-full">
+      <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-10 w-full">
         
         {/* Header */}
-        <section className="max-w-5xl mx-auto mb-12 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+        <section className="max-w-5xl mx-auto mb-14 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 bg-linear-to-r from-white to-zinc-400 bg-clip-text text-transparent">
             Official Game Rules
           </h1>
-          <p className="text-zinc-400 max-w-2xl mx-auto">
+          <p className="text-zinc-400 max-w-2xl mx-auto text-lg">
             Predict the podium and Driver of the Day before lights out.
             Earn points based on accuracy. Climb the leaderboard.
             No luck. Just race IQ.
@@ -20,8 +20,9 @@ function Rules() {
 
         {/* Scoring Rules */}
         <section className="max-w-5xl mx-auto mb-10">
-          <div className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition duration-300 rounded-2xl p-8 shadow-xl">
-            <h2 className="text-2xl font-semibold mb-6 text-green-500">
+          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
+            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <h2 className="text-2xl font-semibold mb-8 tracking-wide text-emerald-400">
               Scoring Rules
             </h2>
 
@@ -71,15 +72,14 @@ function Rules() {
 
         {/* Example Calculation */}
         <section className="max-w-5xl mx-auto mb-10">
-          <div className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition duration-300 rounded-2xl p-8">
-            <h2 className="text-2xl font-semibold mb-6 text-cyan-400">
+          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
+            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <h2 className="text-2xl font-semibold mb-8 tracking-wide text-cyan-400">
               Example: How Points Are Calculated
             </h2>
 
             <div className="space-y-4 text-zinc-300">
-              <p>
-                You predict:
-              </p>
+              <p>You predict:</p>
               <ul className="list-disc list-inside space-y-1">
                 <li>P1: Verstappen</li>
                 <li>P2: Leclerc</li>
@@ -87,9 +87,7 @@ function Rules() {
                 <li>Driver of the Day: Leclerc</li>
               </ul>
 
-              <p className="mt-4">
-                Actual Result:
-              </p>
+              <p className="mt-4">Actual Result:</p>
               <ul className="list-disc list-inside space-y-1">
                 <li>P1: Verstappen</li>
                 <li>P2: Norris</li>
@@ -97,7 +95,7 @@ function Rules() {
                 <li>Driver of the Day: Leclerc</li>
               </ul>
 
-              <div className="bg-neutral-800 rounded-xl p-4 mt-4 border border-zinc-800">
+              <div className="bg-neutral-800 rounded-xl p-4 mt-6 border border-zinc-800">
                 <p className="mb-2 text-white font-semibold">Points Breakdown:</p>
                 <ul className="space-y-1 text-zinc-300">
                   <li>Verstappen exact match → +25 pts</li>
@@ -115,8 +113,9 @@ function Rules() {
 
         {/* Prediction Rules */}
         <section className="max-w-5xl mx-auto mb-10">
-          <div className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition duration-300 rounded-2xl p-8">
-            <h2 className="text-2xl font-semibold mb-6 text-blue-500">
+          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
+            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <h2 className="text-2xl font-semibold mb-8 tracking-wide text-blue-400">
               Prediction Rules
             </h2>
 
@@ -130,56 +129,48 @@ function Rules() {
           </div>
         </section>
 
-        {/* Leaderboard & Ranking */}
+        {/* Leaderboard & Rankings */}
         <section className="max-w-5xl mx-auto mb-10">
-          <div className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition duration-300 rounded-2xl p-8">
-            <h2 className="text-2xl font-semibold mb-6 text-purple-500">
+          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
+            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <h2 className="text-2xl font-semibold mb-8 tracking-wide text-purple-500">
               Leaderboard & Rankings
             </h2>
 
             <ul className="space-y-3 text-zinc-300 list-disc list-inside">
               <li>Rankings are based on total accumulated points.</li>
-              <li>
-                Tie-breaker 1: More exact position matches.
-              </li>
-              <li>
-                Tie-breaker 2: Earlier prediction submission time.
-              </li>
-              <li>
-                Leaderboard updates after official FIA results confirmation.
-              </li>
+              <li>Tie-breaker 1: More exact position matches.</li>
+              <li>Tie-breaker 2: Earlier prediction submission time.</li>
+              <li>Leaderboard updates after official FIA results confirmation.</li>
             </ul>
           </div>
         </section>
 
-        {/* Fair Play */}
+        {/* Fair Play Policy */}
         <section className="max-w-5xl mx-auto mb-12">
-          <div className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition duration-300 rounded-2xl p-8">
-            <h2 className="text-2xl font-semibold mb-6 text-red-500">
+          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
+            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <h2 className="text-2xl font-semibold mb-8 tracking-wide text-red-400">
               Fair Play Policy
             </h2>
 
             <ul className="space-y-3 text-zinc-300 list-disc list-inside">
               <li>Multiple accounts to manipulate rankings are prohibited.</li>
               <li>Exploiting bugs or loopholes will result in disqualification.</li>
-              <li>
-                Points may be adjusted if official race results are revised.
-              </li>
+              <li>Points may be adjusted if official race results are revised.</li>
               <li>Admin decisions are final in dispute scenarios.</li>
             </ul>
           </div>
         </section>
 
-        {/* Footer Note */}
-        <section className="max-w-5xl mx-auto text-center text-zinc-500 text-sm">
-          <p>
-            Rulebook Version 1.0 • Subject to future updates
-          </p>
+        {/* Footer */}
+        <section className="max-w-5xl mx-auto text-center text-zinc-500 text-sm mb-12">
+          <p>Rulebook Version 1.0 • Subject to future updates</p>
         </section>
 
       </div>
     </PageWrapper>
   );
-}
+};
 
 export default Rules;

@@ -12,7 +12,7 @@ export default function PageWrapper({ children }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
-      className="relative min-h-screen flex flex-col bg-neutral-800 text-white w-full"
+      className="relative min-h-screen flex flex-col bg-black text-white w-full"
     >
       <div className="flex-1">{children}</div>
       <Footer />

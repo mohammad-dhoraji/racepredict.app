@@ -34,22 +34,23 @@ function Drivers() {
 
   return (
     <PageWrapper>
-      <div className="min-h-screen bg-neutral-800 text-white px-6 py-10 w-full">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">
+      <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-10 w-full">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-4xl font-extrabold tracking-tight mb-12 bg-linear-to-r from-white to-zinc-400 bg-clip-text text-transparent">
             Drivers Championship – 2025
           </h1>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl">
+          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-3xl overflow-hidden ">
+            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-zinc-800 text-zinc-400 text-sm uppercase tracking-wider">
+                <thead className="bg-zinc-900/50 text-zinc-300 text-xs uppercase tracking-widest border-b border-zinc-800">
                   <tr>
-                    <th className="px-6 py-4">Pos</th>
-                    <th className="px-6 py-4">Driver</th>
-                    <th className="px-6 py-4">Team</th>
-                    <th className="px-6 py-4">Pts</th>
-                    <th className="px-6 py-4">Wins</th>
+                    <th className="px-6 py-4 text-left font-semibold">Pos</th>
+                    <th className="px-6 py-4 text-left font-semibold">Driver</th>
+                    <th className="px-6 py-4 text-left font-semibold">Team</th>
+                    <th className="px-6 py-4 text-left font-semibold">Pts</th>
+                    <th className="px-6 py-4 text-left font-semibold">Wins</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -81,7 +82,7 @@ function Drivers() {
             </div>
           </div>
 
-          <p className="text-zinc-500 text-sm mt-6">
+          <p className="text-zinc-400 text-sm mt-8">
             Use championship trends and win count to guide your podium
             predictions.
           </p>

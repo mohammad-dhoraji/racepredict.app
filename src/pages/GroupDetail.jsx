@@ -68,21 +68,22 @@ const GroupDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-800 text-white px-6 py-10 w-full">
-      <div className="max-w-6xl mx-auto space-y-12">
+    <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-10 w-full">
+      <div className="max-w-5xl mx-auto space-y-12">
 
         {/* ================= HEADER ================= */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6">
-          <div className="flex justify-between items-center flex-wrap gap-4">
+        <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
+          <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+          <div className="flex justify-between items-center flex-wrap gap-6">
             <div>
-              <h1 className="text-3xl font-bold">{group.name}</h1>
-              <p className="text-zinc-400 text-sm mt-1">
+              <h1 className="text-4xl font-extrabold">{group.name}</h1>
+              <p className="text-zinc-400 text-sm mt-2">
                 {group.members.length} Members
               </p>
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="text-sm bg-zinc-800 px-4 py-2 rounded-lg border border-zinc-700">
+              <div className="text-sm bg-zinc-800/50 px-4 py-2 rounded-xl border border-zinc-700">
                 Invite Code:{" "}
                 <span className="text-[#c1a362] font-semibold">
                   {group.inviteCode}
@@ -95,22 +96,23 @@ const GroupDetail = () => {
 
         {/* ================= LEADERBOARD ================= */}
         <div>
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold">Group Leaderboard</h2>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl font-semibold tracking-wide">Group Leaderboard</h2>
             <Button onClick={downloadLeaderboard}>
               Download Leaderboard
             </Button>
           </div>
 
           <div ref={leaderboardRef}>
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden p-6">
+            <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl overflow-hidden p-10 shadow-2xl shadow-black/40">
+              <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
               
               {/* Share Header */}
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-[#c1a362]">
+              <div className="mb-8">
+                <h3 className="text-2xl font-bold text-[#c1a362]">
                   {group.name}
                 </h3>
-                <p className="text-sm text-zinc-400">
+                <p className="text-sm text-zinc-400 mt-1">
                   Official Leaderboard
                 </p>
               </div>
@@ -148,11 +150,12 @@ const GroupDetail = () => {
 
         {/* ================= CURRENT RACE STATUS ================= */}
         <div>
-          <h2 className="text-2xl font-semibold mb-6">
+          <h2 className="text-2xl font-semibold mb-8 tracking-wide">
             {group.currentRace.name} – Prediction Status
           </h2>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-3">
+          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40 space-y-3">
+            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
             {group.currentRace.submissions.map((user, index) => (
               <div key={index} className="flex justify-between text-sm">
                 <span>{user.username}</span>
@@ -172,7 +175,7 @@ const GroupDetail = () => {
 
         {/* ================= RACE HISTORY ================= */}
         <div>
-          <h2 className="text-2xl font-semibold mb-6">
+          <h2 className="text-2xl font-semibold mb-8 tracking-wide">
             Past Race Results
           </h2>
 
@@ -180,9 +183,10 @@ const GroupDetail = () => {
             {group.raceHistory.map((race, index) => (
               <div
                 key={index}
-                className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6"
+                className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-8 shadow-2xl shadow-black/40"
               >
-                <h3 className="font-bold mb-4">{race.name}</h3>
+                <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+                <h3 className="font-bold mb-6 text-lg">{race.name}</h3>
 
                 <div className="space-y-2 text-sm">
                   {race.results.map((result, i) => (

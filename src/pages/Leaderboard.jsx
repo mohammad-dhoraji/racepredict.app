@@ -19,16 +19,16 @@ const Leaderboard = () => {
 
   return (
     <PageWrapper>
-      <div className="min-h-screen bg-neutral-800 text-white px-6 py-10 w-full">
+      <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-10 w-full">
         
         {/* Header */}
-        <section className="max-w-5xl mx-auto mb-10">
-          <div className="flex justify-between items-center mb-6">
+        <section className="max-w-5xl mx-auto mb-14">
+          <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-linear-to-r from-white to-zinc-400 bg-clip-text text-transparent">
                 Global Leaderboard
               </h1>
-              <p className="text-zinc-400 mt-2">
+              <p className="text-zinc-400 mt-3">
                 Compete. Predict. Dominate.
               </p>
             </div>
@@ -43,24 +43,25 @@ const Leaderboard = () => {
         </section>
 
         {/* Top 3 Highlight */}
-        <section className="max-w-5xl mx-auto grid md:grid-cols-3 gap-6 mb-12">
+        <section className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 mb-14">
           {leaderboard.slice(0, 3).map((user) => (
             <div
               key={user.rank}
-              className={`bg-zinc-900 border border-zinc-800 rounded-2xl p-6 text-center shadow-xl ${
+              className={`relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-8 text-center shadow-2xl shadow-black/40 ${
                 user.rank === 1
-                  ? "ring-2 ring-yellow-500"
+                  ? "ring-2 ring-yellow-500/50"
                   : user.rank === 2
-                  ? "ring-2 ring-gray-400"
-                  : "ring-2 ring-orange-500"
+                  ? "ring-2 ring-gray-400/50"
+                  : "ring-2 ring-orange-500/50"
               }`}
             >
-              <h2 className="text-2xl font-bold mb-2">#{user.rank}</h2>
-              <p className="text-lg font-semibold">{user.username}</p>
-              <p className="text-zinc-400 mt-2">
+              <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+              <h2 className="text-3xl font-extrabold mb-3">#{user.rank}</h2>
+              <p className="text-xl font-semibold">{user.username}</p>
+              <p className="text-zinc-400 mt-3">
                 {user.totalPoints} pts
               </p>
-              <p className="text-green-500 text-sm mt-1">
+              <p className="text-emerald-400 text-sm mt-2 font-medium">
                 +{user.lastRace} last race
               </p>
             </div>
@@ -69,8 +70,9 @@ const Leaderboard = () => {
 
         {/* Full Leaderboard Table */}
         <section className="max-w-5xl mx-auto">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-xl">
-            <h3 className="text-xl font-semibold mb-6">
+          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
+            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <h3 className="text-2xl font-semibold mb-8 tracking-wide">
               Full Rankings
             </h3>
 
@@ -94,7 +96,7 @@ const Leaderboard = () => {
                   </div>
 
                   <div className="flex items-center gap-6 text-sm">
-                    <span className="text-green-500 font-semibold">
+                    <span className="text-emerald-400 font-semibold">
                       +{user.lastRace}
                     </span>
                     <span className="font-bold">

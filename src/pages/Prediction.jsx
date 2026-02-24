@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Button from "../components/Button";
+import DriverSelect from "../components/DriverSelect";
 
 const drivers = [
   "Max Verstappen",
@@ -29,14 +30,17 @@ const Prediction = () => {
   const [error, setError] = useState("");
 
   const handleChange = (position, value) => {
-    setPrediction({ ...prediction, [position]: value });
+    setPrediction((prev) => ({
+      ...prev,
+      [position]: value,
+    }));
     setError("");
   };
 
   const validatePrediction = () => {
-    const { first, second, third } = prediction;
+    const { first, second, third, dotd } = prediction;
 
-    if (!first || !second || !third || !prediction.dotd) {
+    if (!first || !second || !third || !dotd) {
       return "All fields must be selected.";
     }
 
@@ -65,142 +69,106 @@ const Prediction = () => {
   const isLocked = race.status === "LOCKED";
 
   return (
-    <div className="min-h-screen bg-neutral-800 text-white px-6 py-10 w-full">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-12 w-full">
+      <div className="max-w-5xl mx-auto">
+        {/* ================= Header ================= */}
+        <div className="mb-14">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-4xl font-extrabold tracking-tight bg-linear-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+              {race.name}
+            </h1>
 
-        {/* Race Header */}
-        <div className="mb-10">
-          <div className="flex justify-between items-center mb-3">
-            <h1 className="text-3xl font-bold">{race.name}</h1>
             <span
-              className={`px-3 py-1 text-xs rounded-full font-semibold ${
+              className={`px-4 py-1.5 text-xs tracking-widest rounded-full font-bold ${
                 isLocked
-                  ? "bg-red-600"
-                  : "bg-green-600"
+                  ? "bg-red-600/20 text-red-400 border border-red-500/30"
+                  : "bg-emerald-600/20 text-emerald-400 border border-emerald-500/30"
               }`}
             >
               {race.status}
             </span>
           </div>
-          <p className="text-zinc-400">{race.date}</p>
+
+          <p className="text-zinc-500 text-sm uppercase tracking-wide">
+            {race.date}
+          </p>
+
+          <div className="mt-6 h-0.5 w-full bg-linear-to-r from-[#c1a362] via-zinc-700 to-transparent rounded-full" />
         </div>
 
-        {/* Prediction Card */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-xl">
+        {/* ================= Card ================= */}
+        <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
 
-          <h2 className="text-xl font-semibold mb-6">
+          <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+
+          <h2 className="text-2xl font-semibold mb-10 tracking-wide">
             Select Your Podium
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            {/* 1st */}
-            <div>
-              <label className="block text-sm text-zinc-400 mb-2">
-                1st Place
-              </label>
-              <select
-                disabled={isLocked}
-                value={prediction.first}
-                onChange={(e) =>
-                  handleChange("first", e.target.value)
-                }
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a362]"
-              >
-                <option value="">Select Driver</option>
-                {drivers.map((driver) => (
-                  <option key={driver} value={driver}>
-                    {driver}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {/* ===== Podium Grid ===== */}
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
 
-            {/* 2nd */}
-            <div>
-              <label className="block text-sm text-zinc-400 mb-2">
-                2nd Place
-              </label>
-              <select
-                disabled={isLocked}
-                value={prediction.second}
-                onChange={(e) =>
-                  handleChange("second", e.target.value)
-                }
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a362]"
-              >
-                <option value="">Select Driver</option>
-                {drivers.map((driver) => (
-                  <option key={driver} value={driver}>
-                    {driver}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* 3rd */}
-            <div>
-              <label className="block text-sm text-zinc-400 mb-2">
-                3rd Place
-              </label>
-              <select
-                disabled={isLocked}
-                value={prediction.third}
-                onChange={(e) =>
-                  handleChange("third", e.target.value)
-                }
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a362]"
-              >
-                <option value="">Select Driver</option>
-                {drivers.map((driver) => (
-                  <option key={driver} value={driver}>
-                    {driver}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Driver of the Day */}
-          <div className="mb-8">
-            <label className="block text-sm text-zinc-400 mb-2">
-              Driver of the Day
-            </label>
-            <select
+            <DriverSelect
+              label="1st Place"
+              value={prediction.first}
+              onChange={(val) => handleChange("first", val)}
+              drivers={drivers}
               disabled={isLocked}
-              value={prediction.dotd}
-              onChange={(e) =>
-                handleChange("dotd", e.target.value)
-              }
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#c1a362]"
-            >
-              <option value="">Select Driver</option>
-              {drivers.map((driver) => (
-                <option key={driver} value={driver}>
-                  {driver}
-                </option>
-              ))}
-            </select>
+              highlight="ring-yellow-500/40"
+            />
+
+            <DriverSelect
+              label="2nd Place"
+              value={prediction.second}
+              onChange={(val) => handleChange("second", val)}
+              drivers={drivers}
+              disabled={isLocked}
+              highlight="ring-zinc-400/30"
+            />
+
+            <DriverSelect
+              label="3rd Place"
+              value={prediction.third}
+              onChange={(val) => handleChange("third", val)}
+              drivers={drivers}
+              disabled={isLocked}
+              highlight="ring-amber-700/40"
+            />
           </div>
 
-          {/* Error */}
+          {/* ===== Driver of the Day ===== */}
+          <div className="mb-10">
+            <DriverSelect
+              label="Driver of the Day"
+              value={prediction.dotd}
+              onChange={(val) => handleChange("dotd", val)}
+              drivers={drivers}
+              disabled={isLocked}
+              highlight="ring-[#c1a362]/50"
+            />
+          </div>
+
+          {/* ===== Error ===== */}
           {error && (
-            <div className="mb-6 text-red-500 text-sm">
+            <div className="mb-6 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg p-3">
               {error}
             </div>
           )}
 
-          {/* Submit */}
+          {/* ===== Submit ===== */}
           {!isLocked ? (
-            <Button onClick={handleSubmit}>
+            <Button
+              onClick={handleSubmit}
+              className="w-full md:w-auto mx-auto block"
+            >
               Submit Prediction
             </Button>
           ) : (
-            <div className="text-red-500 font-medium">
+            <div className="text-red-400 font-medium text-center">
               Predictions are locked. Race has started.
             </div>
           )}
         </div>
-
       </div>
     </div>
   );
