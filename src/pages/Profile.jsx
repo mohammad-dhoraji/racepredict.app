@@ -52,7 +52,7 @@ function Profile() {
         <Achievements />
         <section className="max-w-5xl mx-auto">
           <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40 flex justify-between items-center">
-            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
             <div>
               <h2 className="text-2xl font-semibold tracking-wide">Account</h2>
               <p className="text-zinc-400 text-sm mt-1">Manage your session</p>

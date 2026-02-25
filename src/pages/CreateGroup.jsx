@@ -85,12 +85,9 @@ export default function CreateGroup() {
       return;
     }
 
-    // Try to refresh the groups list, but do not surface invalidate errors to the user
     try {
       await queryClient.invalidateQueries({ queryKey: ["groups", "my"] });
     } catch (err) {
-      // Log but ignore
-      // eslint-disable-next-line no-console
       console.error("Failed to refresh groups after creation:", err);
     }
 

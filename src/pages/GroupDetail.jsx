@@ -64,7 +64,6 @@ const GroupDetail = () => {
       link.href = dataUrl;
       link.click();
     } catch (downloadError) {
-      // Keep this local to avoid blocking page interaction on export failure.
       console.error("Error generating leaderboard image:", downloadError);
     }
   };
@@ -167,7 +166,7 @@ const GroupDetail = () => {
                 </div>
               </div>
 
-              {/* Export-only off-screen leaderboard (always desktop layout) */}
+              {/* Export-only off-screen leaderboard  */}
               <div className="absolute -left-2499.75 top-0">
                 <div ref={exportRef} className="w-225 mx-auto">
                   <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-3xl overflow-hidden p-10 shadow-2xl shadow-black/40">

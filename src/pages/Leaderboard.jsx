@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const Leaderboard = () => {
   const navigate = useNavigate();
 
-  // 🔥 Replace with API later
+  // TODO Replace with API later
   const leaderboard = [
     { rank: 1, username: "SpeedKing", totalPoints: 210, lastRace: 20 },
     { rank: 2, username: "PodiumPro", totalPoints: 198, lastRace: 15 },
@@ -55,7 +55,7 @@ const Leaderboard = () => {
                   : "ring-2 ring-orange-500/50"
               }`}
             >
-              <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+              <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
               <h2 className="text-3xl font-extrabold mb-3">#{user.rank}</h2>
               <p className="text-xl font-semibold">{user.username}</p>
               <p className="text-zinc-400 mt-3">
@@ -71,7 +71,7 @@ const Leaderboard = () => {
         {/* Full Leaderboard Table */}
         <section className="max-w-5xl mx-auto">
           <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
-            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <div className="absolute -top-1 left-0 w-fullh-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
             <h3 className="text-2xl font-semibold mb-8 tracking-wide">
               Full Rankings
             </h3>

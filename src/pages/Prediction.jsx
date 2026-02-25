@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "../components/Button";
 import DriverSelect from "../components/DriverSelect";
+import { apiRequest, apiPost } from "../lib/api";
 
-const drivers = [
+const PRESET_DRIVERS = [
   "Max Verstappen",
   "Charles Leclerc",
   "Lewis Hamilton",
@@ -14,20 +15,33 @@ const drivers = [
 ];
 
 const Prediction = () => {
-  const race = {
-    name: "Australian Grand Prix",
-    date: "March 24, 2026 • 2:00 PM IST",
-    status: "OPEN", // Change to "LOCKED" to test lock state
-  };
-
+  const [race, setRace] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [prediction, setPrediction] = useState({
-    first: "",
-    second: "",
-    third: "",
+    p1: "",
+    p2: "",
+    p3: "",
     dotd: "",
   });
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    const fetchNextRace = async () => {
+      try {
+        const data = await apiRequest("/api/races/next");
+        setRace(data);
+      } catch (err) {
+        console.error("Failed to fetch next race:", err);
+        setError("Could not load upcoming race.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNextRace();
+  }, []);
 
   const handleChange = (position, value) => {
     setPrediction((prev) => ({
@@ -35,16 +49,17 @@ const Prediction = () => {
       [position]: value,
     }));
     setError("");
+    setSuccess(false);
   };
 
   const validatePrediction = () => {
-    const { first, second, third, dotd } = prediction;
+    const { p1, p2, p3, dotd } = prediction;
 
-    if (!first || !second || !third || !dotd) {
+    if (!p1 || !p2 || !p3 || !dotd) {
       return "All fields must be selected.";
     }
 
-    const podium = [first, second, third];
+    const podium = [p1, p2, p3];
     const uniqueDrivers = new Set(podium);
 
     if (uniqueDrivers.size !== 3) {
@@ -54,7 +69,7 @@ const Prediction = () => {
     return null;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const validationError = validatePrediction();
 
     if (validationError) {
@@ -62,11 +77,31 @@ const Prediction = () => {
       return;
     }
 
-    console.log("Submitted Prediction:", prediction);
-    alert("Prediction submitted successfully!");
+    try {
+      setError("");
+      await apiPost("/api/predictions", {
+        race_id: race.id,
+        ...prediction
+      });
+      setSuccess(true);
+      alert("Prediction submitted successfully!");
+    } catch (err) {
+      setError(err.message || "Failed to submit prediction.");
+    }
   };
 
-  const isLocked = race.status === "LOCKED";
+  if (loading) return <div className="text-white p-10">Loading upcoming race...</div>;
+  if (!race) return <div className="text-white p-10">No upcoming races found.</div>;
+
+  const isLocked = race.status !== "upcoming";
+  const raceDate = new Date(race.race_date).toLocaleString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short"
+  });
 
   return (
     <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-12 w-full">
@@ -85,12 +120,12 @@ const Prediction = () => {
                   : "bg-emerald-600/20 text-emerald-400 border border-emerald-500/30"
               }`}
             >
-              {race.status}
+              {race.status.toUpperCase()}
             </span>
           </div>
 
           <p className="text-zinc-500 text-sm uppercase tracking-wide">
-            {race.date}
+            {raceDate}
           </p>
 
           <div className="mt-6 h-0.5 w-full bg-linear-to-r from-[#c1a362] via-zinc-700 to-transparent rounded-full" />
@@ -110,27 +145,27 @@ const Prediction = () => {
 
             <DriverSelect
               label="1st Place"
-              value={prediction.first}
-              onChange={(val) => handleChange("first", val)}
-              drivers={drivers}
+              value={prediction.p1}
+              onChange={(val) => handleChange("p1", val)}
+              drivers={PRESET_DRIVERS}
               disabled={isLocked}
               highlight="ring-yellow-500/40"
             />
 
             <DriverSelect
               label="2nd Place"
-              value={prediction.second}
-              onChange={(val) => handleChange("second", val)}
-              drivers={drivers}
+              value={prediction.p2}
+              onChange={(val) => handleChange("p2", val)}
+              drivers={PRESET_DRIVERS}
               disabled={isLocked}
               highlight="ring-zinc-400/30"
             />
 
             <DriverSelect
               label="3rd Place"
-              value={prediction.third}
-              onChange={(val) => handleChange("third", val)}
-              drivers={drivers}
+              value={prediction.p3}
+              onChange={(val) => handleChange("p3", val)}
+              drivers={PRESET_DRIVERS}
               disabled={isLocked}
               highlight="ring-amber-700/40"
             />
@@ -142,7 +177,7 @@ const Prediction = () => {
               label="Driver of the Day"
               value={prediction.dotd}
               onChange={(val) => handleChange("dotd", val)}
-              drivers={drivers}
+              drivers={PRESET_DRIVERS}
               disabled={isLocked}
               highlight="ring-[#c1a362]/50"
             />
@@ -152,6 +187,13 @@ const Prediction = () => {
           {error && (
             <div className="mb-6 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-lg p-3">
               {error}
+            </div>
+          )}
+
+          {/* ===== Success ===== */}
+          {success && (
+            <div className="mb-6 text-emerald-400 text-sm bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3">
+              Prediction submitted successfully!
             </div>
           )}
 
