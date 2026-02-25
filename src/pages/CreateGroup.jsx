@@ -78,13 +78,23 @@ export default function CreateGroup() {
       const inviteToken = data?.inviteToken;
       const inviteUrl = inviteToken ? `${window.location.origin}/join/${inviteToken}` : "";
       setInviteLink(inviteUrl);
-      await queryClient.invalidateQueries({ queryKey: ["groups", "my"] });
       setName("");
     } catch (error) {
       setErrorMessage(mapCreateGroupError(error));
-    } finally {
       setLoading(false);
+      return;
     }
+
+    // Try to refresh the groups list, but do not surface invalidate errors to the user
+    try {
+      await queryClient.invalidateQueries({ queryKey: ["groups", "my"] });
+    } catch (err) {
+      // Log but ignore
+      // eslint-disable-next-line no-console
+      console.error("Failed to refresh groups after creation:", err);
+    }
+
+    setLoading(false);
   };
 
   return (

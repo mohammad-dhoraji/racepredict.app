@@ -176,7 +176,9 @@ const Groups = () => {
                         <Button
                           type="button"
                           onClick={() => {
-                            const link = `${window.location.origin}/join/${group.inviteToken}`;
+                            const link = `${window.location.origin}/join/${encodeURIComponent(
+                              group.inviteToken
+                            )}`;
                             setActiveShare({
                               link,
                               name: group.name,

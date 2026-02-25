@@ -41,7 +41,7 @@ function Drivers() {
           </h1>
 
           <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-3xl overflow-hidden ">
-            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead className="bg-zinc-900/50 text-zinc-300 text-xs uppercase tracking-widest border-b border-zinc-800">

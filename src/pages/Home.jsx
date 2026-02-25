@@ -4,15 +4,19 @@ import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import { useEffect, useState } from "react";
+import { apiRequest } from "../lib/api";
 
 function Home() {
   const navigate = useNavigate();
   const [race, setRace] = useState(null);
   useEffect(() => {
     const fetchRace = async () => {
-      const res = await fetch("http://localhost:3000/api/races/next");
-      const data = await res.json();
-      setRace(data);
+      try {
+        const data = await apiRequest("/api/races/next");
+        setRace(data);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     fetchRace();
@@ -38,7 +42,7 @@ function Home() {
             Make Prediction
           </Button>
         </section>
-       
+
         {/* Upcoming Race Section */}
         <section className="max-w-5xl mx-auto mb-14">
           <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">

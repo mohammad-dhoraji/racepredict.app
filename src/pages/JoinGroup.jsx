@@ -12,7 +12,6 @@ const mapJoinError = (error) => {
   if (error?.status === 400) return "Invalid invite link.";
   if (error?.status === 404) return "Group not found.";
   if (error?.status === 409) return "Already in group.";
-  if (error?.status === 401) return "Please sign in to join this group.";
   if (error?.isTimeout) return "The request took too long. Please try again.";
   if (error?.isNetworkError) {
     return "Network issue. Please check your connection and try again.";
@@ -59,13 +58,24 @@ export default function JoinGroup() {
     setInfoMessage("Joining group...");
 
     try {
-      await apiPost(`/api/groups/join/${normalizedToken}`);
-      setInfoMessage("Joined successfully. Redirecting...");
-      await queryClient.invalidateQueries({ queryKey: ["groups", "my"] });
-      navigate("/groups", { replace: true });
+        await apiPost(`/api/groups/join/${normalizedToken}`);
+        setInfoMessage("Joined successfully. Redirecting...");
+        try {
+          await queryClient.invalidateQueries({ queryKey: ["groups", "my"] });
+        } catch (err) {
+          console.error("Failed to refresh groups after join:", err);
+        }
+        navigate("/groups", { replace: true });
     } catch (error) {
-      setInfoMessage("");
-      setErrorMessage(mapJoinError(error));
+        // If unauthorized, redirect to login flow instead of showing a retry message
+        if (error?.status === 401) {
+          setLoading(false);
+          navigate(buildLoginRedirectPath(normalizedToken), { replace: true });
+          return;
+        }
+
+        setInfoMessage("");
+        setErrorMessage(mapJoinError(error));
     } finally {
       setLoading(false);
     }
@@ -115,7 +125,7 @@ export default function JoinGroup() {
               </div>
             ) : null}
 
-            <ApiMessage variant="info" message={infoMessage} />
+            {!loading && <ApiMessage variant="info" message={infoMessage} />}
             <ApiMessage variant="error" message={errorMessage} />
 
             <Button
