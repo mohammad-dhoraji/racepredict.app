@@ -19,11 +19,11 @@ const Leaderboard = () => {
 
   return (
     <PageWrapper>
-      <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-10 w-full">
+      <div className="min-h-screen w-full bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-10 overflow-x-hidden">
         
         {/* Header */}
         <section className="max-w-5xl mx-auto mb-14">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-6 mb-8">
             <div>
               <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-linear-to-r from-white to-zinc-400 bg-clip-text text-transparent">
                 Global Leaderboard
@@ -71,7 +71,7 @@ const Leaderboard = () => {
         {/* Full Leaderboard Table */}
         <section className="max-w-5xl mx-auto">
           <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
-            <div className="absolute -top-1 left-0 w-fullh-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
             <h3 className="text-2xl font-semibold mb-8 tracking-wide">
               Full Rankings
             </h3>
