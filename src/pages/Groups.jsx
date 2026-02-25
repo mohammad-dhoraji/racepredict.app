@@ -4,6 +4,8 @@ import Button from "../components/Button";
 import PageWrapper from "../components/PageWrapper";
 import ApiMessage from "../components/ApiMessage";
 import { useMyGroups } from "../hooks/useMyGroups";
+import { Share2 } from "lucide-react";
+import ShareModal from "../components/ShareModal";
 
 const mapGroupsLoadError = (error) => {
   const status = error?.status ?? error?.response?.status;
@@ -40,8 +42,9 @@ const GroupsSkeleton = () => (
 const Groups = () => {
   const [joinToken, setJoinToken] = useState("");
   const navigate = useNavigate();
-  const { data, isLoading, isFetching, isError, error, refetch } = useMyGroups();
-
+  const { data, isLoading, isFetching, isError, error, refetch } =
+    useMyGroups();
+  const [activeShare, setActiveShare] = useState(null);
   const normalizedJoinToken = useMemo(() => joinToken.trim(), [joinToken]);
   const groups = useMemo(() => data?.groups || [], [data]);
 
@@ -63,13 +66,17 @@ const Groups = () => {
             <h1 className="text-4xl font-extrabold tracking-tight mb-3 bg-linear-to-r from-white to-zinc-400 bg-clip-text text-transparent">
               Groups
             </h1>
-            <p className="text-zinc-400">Compete privately with friends. Create or join a group.</p>
+            <p className="text-zinc-400">
+              Compete privately with friends. Create or join a group.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-14">
             <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
-              <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
-              <h2 className="text-2xl font-semibold mb-8 tracking-wide">Create Group</h2>
+              <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+              <h2 className="text-2xl font-semibold mb-8 tracking-wide">
+                Create Group
+              </h2>
               <p className="text-zinc-400 text-sm mb-6">
                 Start a new private group and share an invite link.
               </p>
@@ -77,9 +84,13 @@ const Groups = () => {
             </div>
 
             <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
-              <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
-              <h2 className="text-2xl font-semibold mb-8 tracking-wide">Join Group</h2>
-              <label htmlFor="join-token" className="sr-only">Enter invite token</label>
+              <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+              <h2 className="text-2xl font-semibold mb-8 tracking-wide">
+                Join Group
+              </h2>
+              <label htmlFor="join-token" className="sr-only">
+                Enter invite token
+              </label>
               <input
                 id="join-token"
                 type="text"
@@ -96,9 +107,11 @@ const Groups = () => {
           </div>
 
           <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
-            <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+            <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-2xl font-semibold tracking-wide">Your Groups</h2>
+              <h2 className="text-2xl font-semibold tracking-wide">
+                Your Groups
+              </h2>
               <div className="flex items-center gap-3">
                 {isFetching && !isLoading ? (
                   <span className="text-xs uppercase tracking-wider text-zinc-500">
@@ -115,7 +128,10 @@ const Groups = () => {
 
             {isError ? (
               <div className="space-y-4">
-                <ApiMessage variant="error" message={mapGroupsLoadError(error)} />
+                <ApiMessage
+                  variant="error"
+                  message={mapGroupsLoadError(error)}
+                />
                 <Button type="button" onClick={() => refetch()}>
                   Retry
                 </Button>
@@ -124,7 +140,8 @@ const Groups = () => {
 
             {!isLoading && !isError && groups.length === 0 ? (
               <p className="text-zinc-500">
-                You are not in any groups yet. Create one or join with an invite token.
+                You are not in any groups yet. Create one or join with an invite
+                token.
               </p>
             ) : null}
 
@@ -137,31 +154,42 @@ const Groups = () => {
                   >
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
-                        <h3 className="text-lg font-semibold text-white">{group.name}</h3>
+                        <h3 className="text-lg font-semibold text-white">
+                          {group.name}
+                        </h3>
                         <p className="text-sm text-zinc-400">
-                          Role: {group.role ?? "—"} | Members: {group.memberCount ?? 0}
+                          Role: {group.role ?? "—"} | Members:{" "}
+                          {group.memberCount ?? 0}
                         </p>
                       </div>
 
-                      <Button type="button" onClick={() => navigate(`/groups/${group.id}`)}>
+                      <Button
+                        type="button"
+                        onClick={() => navigate(`/groups/${group.id}`)}
+                      >
                         Open Group
                       </Button>
                     </div>
 
-                    {group.inviteLink ? (
-                      <div className="mt-3 rounded-xl border border-zinc-700 bg-zinc-950/60 p-3">
-                        <p className="text-xs uppercase tracking-wider text-zinc-400">Invite Link</p>
-                        <a
-                          href={group.inviteLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="break-all text-sm text-[#c1a362]"
-                          aria-label={`Open invite link for ${group.name}`}
+                    {group.inviteToken && (
+                      <div className="mt-3">
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            const link = `${window.location.origin}/join/${group.inviteToken}`;
+                            setActiveShare({
+                              link,
+                              name: group.name,
+                            });
+                          }}
                         >
-                          {group.inviteLink}
-                        </a>
+                          <span className="flex items-center gap-2">
+                            <Share2 size={16} />
+                            Invite Friends
+                          </span>
+                        </Button>
                       </div>
-                    ) : null}
+                    )}
                   </div>
                 ))}
               </div>
@@ -169,6 +197,12 @@ const Groups = () => {
           </div>
         </div>
       </div>
+      <ShareModal
+        isOpen={!!activeShare}
+        inviteLink={activeShare?.link}
+        groupName={activeShare?.name}
+        onClose={() => setActiveShare(null)}
+      />
     </PageWrapper>
   );
 };

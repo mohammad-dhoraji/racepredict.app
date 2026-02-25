@@ -73,7 +73,7 @@ const GroupDetail = () => {
     <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-10 w-full">
       <div className="max-w-5xl mx-auto space-y-12">
         <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
-          <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+          <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
           {isLoading ? <GroupDetailSkeleton /> : null}
 
           {isError ? (
@@ -119,7 +119,7 @@ const GroupDetail = () => {
 
               <div>
                 <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-3xl overflow-hidden p-10 shadow-2xl shadow-black/40">
-                  <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+                  <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
 
                   <div className="mb-8">
                     <h3 className="text-2xl font-bold text-[#c1a362]">{group.name}</h3>
@@ -168,10 +168,10 @@ const GroupDetail = () => {
               </div>
 
               {/* Export-only off-screen leaderboard (always desktop layout) */}
-              <div className="absolute left-[-9999px] top-0">
-                <div ref={exportRef} className="w-[900px] mx-auto">
+              <div className="absolute -left-2499.75 top-0">
+                <div ref={exportRef} className="w-225 mx-auto">
                   <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-3xl overflow-hidden p-10 shadow-2xl shadow-black/40">
-                    <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+                    <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
 
                     <div className="mb-8">
                       <h3 className="text-2xl font-bold text-[#c1a362]">{group.name}</h3>
@@ -209,7 +209,7 @@ const GroupDetail = () => {
               </h2>
 
               <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40 space-y-3">
-                <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+                <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
 
                     {group.currentRace ? (
                   <>
@@ -244,7 +244,7 @@ const GroupDetail = () => {
                       key={race.raceId}
                       className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-8 shadow-2xl shadow-black/40"
                     >
-                      <div className="absolute -top-1 left-0 w-full h-[3px] bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
+                      <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
                       <h3 className="font-bold mb-6 text-lg">{race.name}</h3>
 
                       <div className="space-y-2 text-sm">

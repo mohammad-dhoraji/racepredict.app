@@ -92,9 +92,9 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-black text-white flex items-center justify-center px-6">
-      <div className="w-full max-w-5xl grid md:grid-cols-2 rounded-b-3xl overflow-hidden shadow-[0_0_80px_rgba(255,0,0,0.15)] border border-zinc-800">
-        <div className="hidden md:flex flex-col justify-between p-14 bg-gradient-to-br from-red-600 via-red-700 to-black relative">
+    <div className="min-h-screen bg-linear-to-br from-black via-zinc-950 to-black text-white flex items-center justify-center px-6">
+      <div className="w-full max-w-5xl grid md:grid-cols-2 rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(255,0,0,0.15)] border border-zinc-800">
+        <div className="hidden md:flex flex-col justify-between p-14 bg-linear-to-br from-red-600 via-red-700 to-black relative">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
 
           <div className="relative z-10">
@@ -198,7 +198,7 @@ function Login() {
               role="status"
               aria-live="assertive"
               aria-atomic="true"
-              className="text-red-500 text-sm min-h-[1.5rem]"
+              className="text-red-500 text-sm min-h-6"
             >
               {error}
             </div>

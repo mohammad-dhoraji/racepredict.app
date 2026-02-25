@@ -102,7 +102,7 @@ export default function JoinGroup() {
     <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black px-6 py-10 text-white">
       <div className="mx-auto w-full max-w-2xl">
         <div className="relative rounded-b-3xl border border-zinc-800 bg-zinc-900/70 p-10 shadow-2xl shadow-black/40 backdrop-blur-xl">
-          <div className="absolute -top-1 left-0 h-[3px] w-full rounded-t-3xl bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362]" />
+          <div className="absolute -top-1 left-0 h-0.75 w-full rounded-t-3xl bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362]" />
 
           <h1 className="text-3xl font-extrabold tracking-tight">Join Group</h1>
           <p className="mt-2 text-zinc-400">Invite token: {normalizedToken || "N/A"}</p>
