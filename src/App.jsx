@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import UsernameGuard from "./components/UsernameGuard";
@@ -12,6 +12,8 @@ import Leaderboard from "./pages/Leaderboard";
 import Drivers from "./pages/Drivers";
 import Profile from "./pages/Profile";
 import GroupDetail from "./pages/GroupDetail";
+import CreateGroup from "./pages/CreateGroup";
+import JoinGroup from "./pages/JoinGroup";
 import Login from "./pages/Login";
 import Rules from "./pages/Rules";
 import NotFound from "./pages/NotFound";
@@ -21,7 +23,6 @@ import PublicOnly from "./components/PublicOnly";
 function App() {
   return (
     <Routes>
-      {/* Public */}
       <Route
         path="/login"
         element={
@@ -31,7 +32,8 @@ function App() {
         }
       />
 
-      {/* Authenticated but no username yet */}
+      <Route path="/join/:inviteToken" element={<JoinGroup />} />
+
       <Route
         path="/onboarding"
         element={
@@ -43,7 +45,6 @@ function App() {
         }
       />
 
-      {/* Fully onboarded users */}
       <Route
         path="/"
         element={
@@ -57,14 +58,14 @@ function App() {
         <Route index element={<Home />} />
         <Route path="predict" element={<Prediction />} />
         <Route path="groups" element={<Groups />} />
-        <Route path="groups/:id" element={<GroupDetail />} />
+        <Route path="groups/create" element={<CreateGroup />} />
+        <Route path="groups/:groupId" element={<GroupDetail />} />
         <Route path="drivers" element={<Drivers />} />
         <Route path="profile" element={<Profile />} />
         <Route path="leaderboard" element={<Leaderboard />} />
         <Route path="rules" element={<Rules />} />
       </Route>
 
-      {/* Catch All */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

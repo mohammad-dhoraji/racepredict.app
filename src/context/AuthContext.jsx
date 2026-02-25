@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,23 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const navigateRef = useRef(navigate);
+
+  // keep a stable ref to navigate so effects don't re-subscribe on navigation
+  useEffect(() => {
+    navigateRef.current = navigate;
+  }, [navigate]);
+
+  const isSafeRedirectPath = (path) => {
+    if (typeof path !== "string" || path.length === 0) return false;
+    if (!path.startsWith("/")) return false;
+    if (path.startsWith("//")) return false;
+    if (path.includes("\\")) return false;
+    if (path.includes("://")) return false;
+    if (path.includes("../") || /%2e%2e/i.test(path)) return false;
+    if (path.length > 200) return false;
+    return true;
+  };
 
   // 🔥 AUTH SESSION ONLY
   useEffect(() => {
@@ -33,6 +50,17 @@ export function AuthProvider({ children }) {
 
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // Handle OAuth redirect path
+      if (session?.user && _event === "SIGNED_IN") {
+        const redirectPath = sessionStorage.getItem("authRedirect");
+        if (redirectPath && isSafeRedirectPath(redirectPath)) {
+          // mark that a redirect is pending so username-check doesn't race
+          sessionStorage.setItem("authRedirectPending", "1");
+          sessionStorage.removeItem("authRedirect");
+          navigateRef.current?.(redirectPath, { replace: true });
+        }
+      }
     });
 
     return () => {
@@ -52,13 +80,19 @@ export function AuthProvider({ children }) {
         .eq("id", user.id)
         .single();
 
+      // If a redirect is pending (handled by SIGNED_IN), skip onboarding navigation
       if (!data?.username) {
-        navigate("/onboarding");
+        const pending = sessionStorage.getItem("authRedirectPending");
+        if (pending) return;
+
+        // perform onboarding navigation and clear any pending marker
+        navigateRef.current?.("/onboarding");
+        sessionStorage.removeItem("authRedirectPending");
       }
     };
 
     checkUsername();
-  }, [user, navigate]);
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, loading }}>

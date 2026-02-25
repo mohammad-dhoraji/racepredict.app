@@ -1,40 +1,53 @@
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { signIn, signUp, signInWithGoogle } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+
+const sanitizeRedirectPath = (path) => {
+  if (typeof path !== "string" || path.length === 0) return "/";
+  if (!path.startsWith("/")) return "/";
+  if (path.startsWith("//")) return "/";
+  return path;
+};
 
 function Login() {
   const [isLogin, setIsLogin] = useState(true);
-  const [username, setUsername] = useState(""); // NEW
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { user, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuth();
   const [formLoading, setFormLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [error, setError] = useState("");
+
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  // Redirect if already logged in
+  const redirectTarget = useMemo(
+    () => sanitizeRedirectPath(searchParams.get("redirect")),
+    [searchParams],
+  );
 
-
-  // Clear error + username when switching modes
   useEffect(() => {
     setError("");
     setUsername("");
   }, [isLogin]);
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
-  setFormLoading(true);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (formLoading) return;
 
-  try {
-    if (isLogin) {
-      await signIn(email, password);
-      navigate("/");
-      return;
-    } else {
+    setError("");
+    setFormLoading(true);
+
+    try {
+      if (isLogin) {
+        await signIn(email, password);
+        navigate(redirectTarget, { replace: true });
+        return;
+      }
+
       if (!username.trim()) {
         throw new Error("Username is required");
       }
@@ -42,31 +55,30 @@ function Login() {
       const result = await signUp(email, password, username);
 
       if (result.status === "authenticated") {
-        navigate("/");
+        navigate(redirectTarget, { replace: true });
         return;
       }
 
       if (result.status === "pending_confirmation") {
         setError("Check your email to confirm your account.");
-        return;
       }
+    } catch (err) {
+      setError(err.message || "Unable to authenticate.");
+    } finally {
+      setFormLoading(false);
     }
-  } catch (err) {
-    setError(err.message);
-  } finally {
-    setFormLoading(false);
-  }
-};
+  };
 
   const handleGoogleSignIn = async () => {
+    if (isGoogleLoading) return;
+
     setError("");
     setIsGoogleLoading(true);
 
     try {
-      await signInWithGoogle();
+      await signInWithGoogle(redirectTarget);
     } catch (err) {
       setError(err.message || "Failed to sign in with Google");
-    } finally {
       setIsGoogleLoading(false);
     }
   };
@@ -82,8 +94,6 @@ function Login() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-black text-white flex items-center justify-center px-6">
       <div className="w-full max-w-5xl grid md:grid-cols-2 rounded-b-3xl overflow-hidden shadow-[0_0_80px_rgba(255,0,0,0.15)] border border-zinc-800">
-        
-        {/* LEFT SIDE */}
         <div className="hidden md:flex flex-col justify-between p-14 bg-gradient-to-br from-red-600 via-red-700 to-black relative">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
 
@@ -99,12 +109,9 @@ function Login() {
             </p>
           </div>
 
-          <div className="relative z-10 text-sm text-zinc-300">
-            © 2026 F1 Prediction Game
-          </div>
+          <div className="relative z-10 text-sm text-zinc-300">(c) 2026 F1 Prediction Game</div>
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="bg-zinc-900/80 backdrop-blur-xl p-10 md:p-14 flex flex-col justify-center">
           <div className="mb-10">
             <h2 className="text-3xl font-bold mb-2 tracking-tight">
@@ -117,7 +124,6 @@ function Login() {
             </p>
           </div>
 
-          {/* GOOGLE BUTTON */}
           <button
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading}
@@ -146,15 +152,11 @@ function Login() {
 
           <div className="relative flex items-center mb-6">
             <div className="grow border-t border-zinc-700"></div>
-            <span className="px-4 text-xs text-zinc-500 uppercase tracking-widest">
-              or
-            </span>
+            <span className="px-4 text-xs text-zinc-500 uppercase tracking-widest">or</span>
             <div className="grow border-t border-zinc-700"></div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            
-            {/* USERNAME FIELD (ONLY FOR SIGNUP) */}
             {!isLogin && (
               <div>
                 <input
@@ -162,7 +164,7 @@ function Login() {
                   placeholder="Username"
                   className="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(event) => setUsername(event.target.value)}
                   required
                 />
               </div>
@@ -175,7 +177,7 @@ function Login() {
                 autoComplete="email"
                 className="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(event) => setEmail(event.target.value)}
                 required
               />
             </div>
@@ -187,7 +189,7 @@ function Login() {
                 autoComplete={isLogin ? "current-password" : "new-password"}
                 className="w-full px-4 py-3 bg-zinc-800/80 border border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 transition"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(event) => setPassword(event.target.value)}
                 required
               />
             </div>
@@ -226,3 +228,5 @@ function Login() {
 }
 
 export default Login;
+
+
