@@ -52,8 +52,8 @@ const Groups = () => {
 
   return (
     <PageWrapper>
-      <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black px-6 py-10 text-white w-full">
-        <div className="max-w-5xl mx-auto space-y-10">
+      <div className="min-h-screen w-full overflow-x-hidden bg-linear-to-b from-neutral-800 via-neutral-950 to-black px-6 py-10 text-white">
+          <div className="max-w-5xl mx-auto space-y-10 w-full">
           {/* HEADER */}
           <div>
             <h1 className="text-4xl font-extrabold tracking-tight mb-3 bg-linear-to-r from-white to-zinc-400 bg-clip-text text-transparent">
@@ -148,7 +148,7 @@ const Groups = () => {
           <div className="relative bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
             <h2 className="text-lg font-semibold mb-6">Create or Join</h2>
 
-            <div className="flex flex-col md:flex-row gap-6">
+              <div className="flex flex-col md:flex-row gap-6">
               <Button onClick={() => navigate("/groups/create")}>
                 <span className="flex items-center gap-2">
                   <Plus size={16} />
@@ -156,13 +156,13 @@ const Groups = () => {
                 </span>
               </Button>
 
-              <div className="flex gap-3 w-full md:w-auto">
+              <div className="flex flex-col sm:flex-row w-full gap-3 md:w-auto min-w-0">
                 <input
                   type="text"
                   placeholder="Invite token"
                   value={joinToken}
                   onChange={(e) => setJoinToken(e.target.value)}
-                  className="flex-1 bg-zinc-800/50 border border-zinc-700 rounded-xl px-4 py-2 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#c1a362]"
+                  className="min-w-0 flex-1 bg-zinc-800/50 border border-zinc-700 rounded-xl px-4 py-2 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#c1a362]"
                 />
                 <Button
                   onClick={handleJoinGroup}

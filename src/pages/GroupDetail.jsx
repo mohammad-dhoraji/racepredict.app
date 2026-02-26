@@ -95,7 +95,7 @@ const GroupDetail = () => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
 
               <div className="min-w-0">
-                <h1 className="text-2xl sm:text-4xl font-extrabold break-words">
+                <h1 className="text-2xl sm:text-4xl font-extrabold wrap-break-word">
                   {group.name}
                 </h1>
                 <p className="text-zinc-400 text-sm mt-2">
@@ -150,7 +150,7 @@ const GroupDetail = () => {
                 <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
 
                 <div className="mb-6 sm:mb-8">
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#c1a362] break-words">
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#c1a362] wrap-break-word">
                     {group.name}
                   </h3>
                   <p className="text-sm text-zinc-400 mt-1">
@@ -195,7 +195,7 @@ const GroupDetail = () => {
                         </span>
                       </div>
 
-                      <div className="mt-2 font-medium break-words">
+                      <div className="mt-2 font-medium wrap-break-word">
                         {member.username}
                       </div>
 
@@ -213,8 +213,8 @@ const GroupDetail = () => {
             </div>
 
             {/* EXPORT SECTION (FIXED POSITIONING) */}
-            <div className="fixed -left-[9999px] top-0">
-              <div ref={exportRef} className="w-[900px] mx-auto">
+            <div className="fixed -left-2499.75 top-0">
+              <div ref={exportRef} className="w-225 mx-auto">
                 <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-3xl overflow-hidden p-10 shadow-2xl shadow-black/40">
                   <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
 
@@ -268,7 +268,7 @@ const GroupDetail = () => {
 
                 {group.currentRace ? (
                   <>
-                    <p className="text-zinc-300 text-sm mb-4 break-words">
+                    <p className="text-zinc-300 text-sm mb-4 wrap-break-word">
                       {group.currentRace.name} ({group.currentRace.status})
                     </p>
 
@@ -320,7 +320,7 @@ const GroupDetail = () => {
                       className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-6 sm:p-8 shadow-2xl shadow-black/40"
                     >
                       <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
-                      <h3 className="font-bold mb-6 text-lg break-words">
+                      <h3 className="font-bold mb-6 text-lg wrap-break-word">
                         {race.name}
                       </h3>
 
