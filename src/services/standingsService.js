@@ -1,7 +1,7 @@
 // DATA LAYER
 // Later you ONLY replace BASE_URL with your backend.
 
-const BASE_URL = "https://api.jolpi.ca/ergast/f1/2025";
+const BASE_URL = "https://api.jolpi.ca/ergast/f1/2026";
 
 export async function fetchDriverStandings() {
   const response = await fetch(`${BASE_URL}/driverstandings/?format=json`);

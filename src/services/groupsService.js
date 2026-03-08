@@ -38,5 +38,7 @@ export const getGroupDetail = async (groupId) => {
     throw new Error("Invalid group id");
   }
 
-  return apiRequest(`/api/groups/${groupId}`);
+  // Add timestamp to bust cache and ensure fresh leaderboard data
+  const cacheBuster = Date.now();
+  return apiRequest(`/api/groups/${groupId}?t=${cacheBuster}`);
 };
