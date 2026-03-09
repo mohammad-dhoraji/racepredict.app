@@ -291,7 +291,7 @@ const Prediction = () => {
             <div className="mt-6 h-[2px] w-full bg-gradient-to-r from-[#c1a362] via-zinc-700 to-transparent rounded-full" />
           </div>
 
-          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-3xl p-10 shadow-2xl shadow-black/40">
+          <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
             <div className="absolute -top-[2px] left-0 w-full h-[3px] bg-gradient-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
 
             <h2 className="text-2xl font-semibold mb-10 tracking-wide">
