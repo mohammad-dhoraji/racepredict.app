@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  getCurrentUser,
-  getProfile,
-  getUserPredictions,
-} from "../services/profileService";
+import { getCurrentUser, getProfile, getUserPredictions } from "../services/profileService";
 
-const POSITIONS_PER_RACE = 4;
+const MAX_RECENT_RACES = 10;
 
 export function useProfile() {
   const [profile, setProfile] = useState(null);
@@ -15,6 +11,7 @@ export function useProfile() {
     lastRaceScore: 0,
     racesPredicted: 0,
     accuracy: 0,
+    globalRank: null,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,58 +21,71 @@ export function useProfile() {
 
     async function fetchProfile() {
       try {
+        // First check if user is authenticated
         const user = await getCurrentUser();
-        if (!user) throw new Error("User not authenticated");
+        if (!user) {
+          if (isMounted) {
+            setError("User not authenticated");
+            setLoading(false);
+          }
+          return;
+        }
 
+        // Fetch profile stats from backend
         const profileData = await getProfile(user.id);
+        
+        // Fetch predictions from backend
         const predictionData = await getUserPredictions(user.id);
 
         if (!isMounted) return;
 
-        setProfile(profileData);
-        setPredictions(predictionData || []);
+        // Set profile data
+        setProfile({
+          username: profileData?.username || "Guest",
+          avatar_url: null, // Backend doesn't provide avatar currently
+        });
 
-        if (predictionData && predictionData.length > 0) {
-          // Sort by race date (prefer race_date, fall back to created_at)
-          const sorted = [...predictionData].sort(
-            (a, b) =>
-              new Date(b.race_date ?? b.created_at) - new Date(a.race_date ?? a.created_at)
+        // Process predictions - limit to recent races for performance
+        const processedPredictions = (predictionData || []).slice(0, MAX_RECENT_RACES);
+        setPredictions(processedPredictions);
+
+        // Calculate derived stats from predictions
+        let lastRaceScore = 0;
+        let racesPredicted = 0;
+
+        if (processedPredictions && processedPredictions.length > 0) {
+          // Sort by created_at to get most recent
+          const sorted = [...processedPredictions].sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at)
           );
 
-          const totalPoints = sorted.reduce(
-            (sum, p) => sum + (p.points || 0),
-            0
+          // Get last race score (most recent prediction)
+          lastRaceScore = sorted[0]?.points || 0;
+
+          // Count unique races predicted
+          const uniqueRaces = new Set(
+            sorted
+              .map(p => p.race_id)
+              .filter(Boolean)
           );
-
-          const lastRaceScore = sorted[0]?.points || 0;
-
-          // Count unique races by race_id to avoid overcounting
-          const uniqueRaces = new Set(sorted.map(p => p.race_id).filter(Boolean));
-          const racesPredicted = uniqueRaces.size > 0 ? uniqueRaces.size : sorted.length;
-
-          // If you DON'T have correct_positions in DB, remove this
-          const correctPositions = sorted.reduce(
-            (sum, p) => sum + (p.correct_positions || 0),
-            0
-          );
-
-          const totalPossible = racesPredicted * POSITIONS_PER_RACE;
-
-          const accuracy =
-            totalPossible > 0
-              ? Math.min(100, Math.round((correctPositions / totalPossible) * 100))
-              : 0;
-
-          setStats({
-            totalPoints,
-            lastRaceScore,
-            racesPredicted,
-            accuracy,
-          });
+          racesPredicted = uniqueRaces.size || sorted.length;
         }
+
+        // Set stats - using backend-provided values plus derived ones
+        setStats({
+          totalPoints: profileData?.totalPoints ?? 0,
+          totalPredictions: profileData?.totalPredictions ?? 0,
+          globalRank: profileData?.globalRank ?? null,
+          lastRaceScore,
+          racesPredicted,
+          // Backend provides accuracy as 0 (placeholder), so we use that
+          accuracy: profileData?.accuracy ?? 0,
+        });
+
       } catch (err) {
         if (isMounted) {
-          setError(err.message || "Something went wrong");
+          console.error("Error fetching profile:", err);
+          setError(err.message || "Failed to load profile");
         }
       } finally {
         if (isMounted) {
@@ -93,3 +103,4 @@ export function useProfile() {
 
   return { profile, predictions, stats, loading, error };
 }
+

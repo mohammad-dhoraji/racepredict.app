@@ -1,10 +1,13 @@
-import React, { useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import * as htmlToImage from "html-to-image";
 import { Copy, Check } from "lucide-react";
 import Button from "../components/Button";
 import ApiMessage from "../components/ApiMessage";
+import Modal from "../components/Modal";
 import { useGroupDetail } from "../hooks/useGroupDetail";
+import { deleteGroup, leaveGroup } from "../services/groupsService";
+import { queryClient } from "../lib/queryClient";
 
 const mapGroupDetailError = (error) => {
   if (error?.status === 401) return "Please sign in to view this group.";
@@ -33,11 +36,25 @@ const GroupDetailSkeleton = () => (
 
 const GroupDetail = () => {
   const { groupId } = useParams();
+  const navigate = useNavigate();
   const exportRef = useRef(null);
   const [copied, setCopied] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showLeaveModal, setShowLeaveModal] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionMessage, setActionMessage] = useState(null);
 
-  const { data: group, isLoading, isFetching, isError, error, refetch } =
-    useGroupDetail(groupId);
+  const {
+    data: group,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useGroupDetail(groupId);
+
+  // Determine if current user is the creator
+  const isCreator = group?.role === "admin";
 
   const downloadLeaderboard = async () => {
     if (!exportRef.current || !group) return;
@@ -68,10 +85,59 @@ const GroupDetail = () => {
     }
   };
 
+  const handleDeleteGroup = async () => {
+    setActionLoading(true);
+    setActionMessage(null);
+    try {
+      await deleteGroup(groupId);
+      setActionMessage({ type: "success", text: "Group deleted successfully" });
+      // Invalidate groups cache and redirect
+      await queryClient.invalidateQueries({ queryKey: ["groups"] });
+      queryClient.removeQueries({ queryKey: ["group", groupId] });
+
+      navigate("/groups");
+    } catch (err) {
+      setActionMessage({
+        type: "error",
+        text: err?.message || "Failed to delete group",
+      });
+    } finally {
+      setActionLoading(false);
+      setShowDeleteModal(false);
+    }
+  };
+
+  const handleLeaveGroup = async () => {
+    setActionLoading(true);
+    setActionMessage(null);
+    try {
+      await leaveGroup(groupId);
+      setActionMessage({
+        type: "success",
+        text: "You left the group successfully",
+      });
+      // Invalidate groups cache and redirect
+      await queryClient.invalidateQueries({ queryKey: ["groups"] });
+      await queryClient.invalidateQueries({ queryKey: ["group", groupId] });
+      navigate("/groups");
+    } catch (err) {
+      setActionMessage({
+        type: "error",
+        text: err?.message || "Failed to leave group",
+      });
+    } finally {
+      setActionLoading(false);
+      setShowLeaveModal(false);
+    }
+  };
+  useEffect(() => {
+    if (isError && error?.status === 403) {
+      navigate("/groups", { replace: true });
+    }
+  }, [isError, error, navigate]);
   return (
     <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-4 sm:px-6 py-8 sm:py-10 w-full">
       <div className="max-w-5xl mx-auto space-y-10 sm:space-y-12">
-
         {/* HEADER */}
         <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-6 sm:p-10 shadow-2xl shadow-black/40">
           <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
@@ -80,7 +146,10 @@ const GroupDetail = () => {
 
           {isError && (
             <div className="space-y-4">
-              <ApiMessage variant="error" message={mapGroupDetailError(error)} />
+              <ApiMessage
+                variant="error"
+                message={mapGroupDetailError(error)}
+              />
               <Button
                 type="button"
                 onClick={refetch}
@@ -93,7 +162,6 @@ const GroupDetail = () => {
 
           {!isLoading && !isError && group && (
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
-
               <div className="min-w-0">
                 <h1 className="text-2xl sm:text-4xl font-extrabold wrap-break-word">
                   {group.name}
@@ -104,27 +172,47 @@ const GroupDetail = () => {
                 </p>
               </div>
 
-              {group.inviteToken && (
-                <div className="flex items-center gap-3 text-sm bg-zinc-800/50 px-4 py-2 rounded-xl border border-zinc-700 w-full sm:w-auto justify-between sm:justify-start">
-                  <div className="truncate">
-                    <span>Invite Code: </span>
-                    <span className="pl-5 text-[#c1a362] font-semibold">
-                      {group.inviteToken}
-                    </span>
-                  </div>
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                {group.inviteToken && (
+                  <div className="flex items-center gap-3 text-sm bg-zinc-800/50 px-4 py-2 rounded-xl border border-zinc-700 w-full sm:w-auto justify-between sm:justify-start">
+                    <div className="truncate">
+                      <span>Invite Code: </span>
+                      <span className="pl-5 text-[#c1a362] font-semibold">
+                        {group.inviteToken}
+                      </span>
+                    </div>
 
-                  <button
-                    onClick={handleCopyInvite}
-                    className="flex items-center justify-center w-8 h-8 rounded-md border border-zinc-600 bg-zinc-700 hover:bg-zinc-600 transition"
+                    <button
+                      onClick={handleCopyInvite}
+                      className="flex items-center justify-center w-8 h-8 rounded-md border border-zinc-600 bg-zinc-700 hover:bg-zinc-600 transition"
+                    >
+                      {copied ? <Check size={16} /> : <Copy size={16} />}
+                    </button>
+                  </div>
+                )}
+
+                {/* Leave Group Button - visible for members but NOT creator */}
+                {!isCreator && (
+                  <Button
+                    disabled={actionLoading}
+                    onClick={() => setShowLeaveModal(true)}
+                    className="w-full sm:w-auto"
                   >
-                    {copied ? (
-                      <Check size={16} />
-                    ) : (
-                      <Copy size={16} />
-                    )}
-                  </button>
-                </div>
-              )}
+                    Leave Group
+                  </Button>
+                )}
+
+                {/* Delete Group Button - visible ONLY for creator */}
+                {isCreator && (
+                  <Button
+                    disabled={actionLoading}
+                    onClick={() => setShowDeleteModal(true)}
+                    className="w-full sm:w-auto bg-red-900/30 border-red-700/40 text-red-400 hover:bg-red-900 hover:text-red-200"
+                  >
+                    Delete Group
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -187,9 +275,7 @@ const GroupDetail = () => {
                       className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700"
                     >
                       <div className="flex justify-between items-center">
-                        <span className="font-semibold">
-                          #{member.rank}
-                        </span>
+                        <span className="font-semibold">#{member.rank}</span>
                         <span className="text-[#c1a362]">
                           +{member.lastRacePoints}
                         </span>
@@ -239,9 +325,7 @@ const GroupDetail = () => {
                       key={member.userId}
                       className="grid grid-cols-4 px-2 py-3 text-sm border-b border-zinc-800 last:border-none"
                     >
-                      <span className="font-semibold">
-                        #{member.rank}
-                      </span>
+                      <span className="font-semibold">#{member.rank}</span>
                       <span>{member.username}</span>
                       <span>{member.totalPoints} pts</span>
                       <span className="text-[#c1a362]">
@@ -277,19 +361,13 @@ const GroupDetail = () => {
                         key={user.userId}
                         className="flex justify-between text-sm"
                       >
-                        <span className="truncate">
-                          {user.username}
-                        </span>
+                        <span className="truncate">{user.username}</span>
                         <span
                           className={
-                            user.submitted
-                              ? "text-green-400"
-                              : "text-red-400"
+                            user.submitted ? "text-green-400" : "text-red-400"
                           }
                         >
-                          {user.submitted
-                            ? "Submitted"
-                            : "Not Submitted"}
+                          {user.submitted ? "Submitted" : "Not Submitted"}
                         </span>
                       </div>
                     ))}
@@ -309,9 +387,7 @@ const GroupDetail = () => {
               </h2>
 
               {(group.raceHistory || []).length === 0 ? (
-                <p className="text-zinc-500">
-                  No completed races yet.
-                </p>
+                <p className="text-zinc-500">No completed races yet.</p>
               ) : (
                 <div className="space-y-6">
                   {(group.raceHistory || []).map((race) => (
@@ -330,9 +406,7 @@ const GroupDetail = () => {
                             key={result.userId || idx}
                             className="flex justify-between"
                           >
-                            <span className="truncate">
-                              {result.username}
-                            </span>
+                            <span className="truncate">{result.username}</span>
                             <span className="text-[#c1a362]">
                               {result.points} pts
                             </span>
@@ -345,6 +419,38 @@ const GroupDetail = () => {
               )}
             </div>
           </>
+        )}
+
+        {/* Delete Group Modal */}
+        <Modal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          type="error"
+          title="Delete Group"
+          message={`Are you sure you want to delete "${group?.name}"? This action cannot be undone and all members will be removed.`}
+          confirmLabel={actionLoading ? "Deleting..." : "Delete Group"}
+          onConfirm={handleDeleteGroup}
+        />
+
+        {/* Leave Group Modal */}
+        <Modal
+          isOpen={showLeaveModal}
+          onClose={() => setShowLeaveModal(false)}
+          type="info"
+          title="Leave Group"
+          message={`Are you sure you want to leave "${group?.name}"? You will need to rejoin to participate again.`}
+          confirmLabel={actionLoading ? "Leaving..." : "Leave Group"}
+          onConfirm={handleLeaveGroup}
+        />
+
+        {/* Action Result Message */}
+        {actionMessage && (
+          <div className="fixed bottom-4 right-4 z-50">
+            <ApiMessage
+              variant={actionMessage.type}
+              message={actionMessage.text}
+            />
+          </div>
         )}
       </div>
     </div>

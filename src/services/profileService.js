@@ -1,23 +1,38 @@
+import { supabase } from "../lib/supabaseClient";
 import { apiRequest } from "../lib/api";
 
+/**
+ * Get the currently authenticated user from Supabase
+ * This is used to check authentication state before making API calls
+ */
 export async function getCurrentUser() {
-  // We'll keep session management via supabase if still needed for Auth
-  // but for data, we use the API.
   try {
-    const response = await apiRequest("/api/profile/stats");
-    return response;
+    const { data, error } = await supabase.auth.getUser();
+    if (error || !data?.user) {
+      return null;
+    }
+    return data.user;
   } catch (err) {
+    console.error("Error getting current user:", err);
     return null;
   }
 }
 
-export async function getProfile(userId) {
-  // If userId is provided, we still check stats. 
-  // In our current backend, /stats is for the logged-in user.
+/**
+ * Get profile stats for the logged-in user
+ * Calls GET /api/profile/stats
+ * Note: userId is not needed as backend uses authenticated user from JWT
+ */
+export async function getProfile(_userId) {
   return apiRequest("/api/profile/stats");
 }
 
-export async function getUserPredictions(userId) {
+/**
+ * Get predictions for the logged-in user
+ * Calls GET /api/profile/predictions
+ * Note: userId is not needed as backend uses authenticated user from JWT
+ */
+export async function getUserPredictions(_userId) {
   return apiRequest("/api/profile/predictions");
 }
 

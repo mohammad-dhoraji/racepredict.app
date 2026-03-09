@@ -42,3 +42,23 @@ export const getGroupDetail = async (groupId) => {
   const cacheBuster = Date.now();
   return apiRequest(`/api/groups/${groupId}?t=${cacheBuster}`);
 };
+
+export const deleteGroup = async (groupId) => {
+  if (typeof groupId !== "string" || !UUID_REGEX.test(groupId)) {
+    throw new Error("Invalid group id");
+  }
+
+  return apiRequest(`/api/groups/${groupId}`, {
+    method: "DELETE",
+  });
+};
+
+export const leaveGroup = async (groupId) => {
+  if (typeof groupId !== "string" || !UUID_REGEX.test(groupId)) {
+    throw new Error("Invalid group id");
+  }
+
+  return apiRequest(`/api/groups/${groupId}/leave`, {
+    method: "POST",
+  });
+};

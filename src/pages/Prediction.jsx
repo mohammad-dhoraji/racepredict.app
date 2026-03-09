@@ -94,7 +94,11 @@ const Prediction = () => {
       ]);
 
       setRace(nextRace || null);
-      setDrivers((driverPayload?.drivers || []).map((entry) => entry.name).filter(Boolean));
+      setDrivers(
+        (driverPayload?.drivers || [])
+          .map((entry) => entry.name)
+          .filter(Boolean),
+      );
 
       if (!nextRace?.id) {
         setRaceStatus(null);
@@ -141,22 +145,36 @@ const Prediction = () => {
     loadPageData();
   }, [loadPageData]);
 
-  const lockAt = raceStatus?.lock_at || race?.lock_at || race?.race_at || race?.race_date;
-  const isLockedByTime = lockAt ? Date.now() >= new Date(lockAt).getTime() : false;
+  const lockAt =
+    raceStatus?.lock_at || race?.lock_at || race?.race_at || race?.race_date;
+  const isLockedByTime = lockAt
+    ? Date.now() >= new Date(lockAt).getTime()
+    : false;
   const isLocked =
     Boolean(raceStatus?.is_locked) ||
     isLockedByTime ||
-    !["upcoming", "scheduled"].includes(String(raceStatus?.status || race?.status || ""));
+    !["upcoming", "scheduled"].includes(
+      String(raceStatus?.status || race?.status || ""),
+    );
 
   const getAvailableDrivers = useCallback(
-    (fieldName) =>
-      drivers.filter((driverName) => {
+    (fieldName) => {
+      // DOTD should allow all drivers
+      if (fieldName === "dotd") {
+        return drivers;
+      }
+
+      // Prevent duplicate podium drivers only
+      const podiumDrivers = [prediction.p1, prediction.p2, prediction.p3];
+
+      return drivers.filter((driverName) => {
         if (prediction[fieldName] === driverName) return true;
 
-        return !Object.entries(prediction).some(
-          ([key, value]) => key !== fieldName && value === driverName,
+        return !podiumDrivers.some(
+          (driver) => driver === driverName && driver !== prediction[fieldName],
         );
-      }),
+      });
+    },
     [drivers, prediction],
   );
 
@@ -173,8 +191,8 @@ const Prediction = () => {
       return "All fields must be selected before submitting.";
     }
 
-    if (new Set([p1, p2, p3, dotd]).size !== 4) {
-      return "P1, P2, P3 and DOTD must all be different drivers.";
+    if (new Set([p1, p2, p3]).size !== 3) {
+      return "P1, P2 and P3 must be different drivers.";
     }
 
     return null;
