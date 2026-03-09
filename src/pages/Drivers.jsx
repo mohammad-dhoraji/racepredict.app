@@ -37,7 +37,7 @@ function Drivers() {
       <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-10 w-full">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-4xl font-extrabold tracking-tight mb-12 bg-linear-to-r from-white to-zinc-400 bg-clip-text text-transparent">
-            Drivers Championship – 2025
+            Drivers Championship – 2026
           </h1>
 
           <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-3xl overflow-hidden ">
