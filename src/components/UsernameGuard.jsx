@@ -7,6 +7,7 @@ function UsernameGuard({ children }) {
   const { user, loading } = useAuth();
   const [checking, setChecking] = useState(true);
   const [hasUsername, setHasUsername] = useState(null);
+  const userId = user?.id ?? null;
 
   useEffect(() => {
     let isMounted = true;
@@ -14,7 +15,7 @@ function UsernameGuard({ children }) {
     const checkProfile = async () => {
       setChecking(true);
 
-      if (!user) {
+      if (!userId) {
         if (isMounted) {
           setChecking(false);
           setHasUsername(null);
@@ -25,7 +26,7 @@ function UsernameGuard({ children }) {
       const { data, error } = await supabase
         .from("profiles")
         .select("username")
-        .eq("id", user.id)
+        .eq("id", userId)
         .maybeSingle();
 
       if (!isMounted) return;
@@ -46,7 +47,7 @@ function UsernameGuard({ children }) {
     return () => {
       isMounted = false;
     };
-  }, [user, loading]);
+  }, [userId, loading]);
 
   if (loading || checking) {
     return (

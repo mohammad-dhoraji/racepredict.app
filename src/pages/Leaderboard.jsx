@@ -71,7 +71,7 @@ const Leaderboard = () => {
 
             <Button
               className="px-5 py-2"
-              onClick={() => navigate("/predict")}
+              onClick={() => navigate("/home/predict")}
             >
               Make Prediction
             </Button>

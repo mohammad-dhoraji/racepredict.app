@@ -10,7 +10,7 @@ export default function useNextRace() {
     setLoading(true);
     setError(null);
     try {
-      const data = await apiRequest("/api/races/next");
+      const data = await apiRequest("/api/races/current");
       setRace(data);
     } catch (err) {
       setError(err);

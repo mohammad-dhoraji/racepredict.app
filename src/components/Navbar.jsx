@@ -8,12 +8,12 @@ function Navbar() {
 
   return (
     <div className="flex items-center gap-8 bg-neutral-900 px-8 py-5 rounded-3xl   ">
-      <h1 className="text-xl font-bold bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-transparent select-none whitespace-nowrap">
+      <h1 className="text-xl font-bold bg-linear-to-r from-white to-zinc-300 bg-clip-text text-transparent select-none whitespace-nowrap">
         Gridlock
       </h1>
       <div className="flex gap-4 flex-1 justify-center">
         <NavLink
-        to="/"
+        to="/home"
         className={({ isActive }) =>
           `${base} ${isActive ? active : "text-white"}`
         }
@@ -22,7 +22,7 @@ function Navbar() {
       </NavLink>
 
       <NavLink
-        to="/groups"
+        to="/home/groups"
         className={({ isActive }) =>
           `${base} ${isActive ? active : "text-white"}`
         }
@@ -31,7 +31,7 @@ function Navbar() {
       </NavLink>
 
       <NavLink
-        to="/drivers"
+        to="/home/drivers"
         className={({ isActive }) =>
           `${base} ${isActive ? active : "text-white"}`
         }
@@ -40,7 +40,7 @@ function Navbar() {
       </NavLink>
 
       <NavLink
-        to="/leaderboard"
+        to="/home/leaderboard"
         className={({ isActive }) =>
           `${base} ${isActive ? active : "text-white"}`
         }

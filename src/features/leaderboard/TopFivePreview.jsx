@@ -3,11 +3,11 @@ import Skeleton from "../../components/Skeleton";
 import ErrorMessage from "../../components/ErrorMessage";
 
 // items: [{ rank, name, points }]
-export default function TopFivePreview({ items, loading, error, onViewFull, onRetry }) {
+export default function TopFivePreview({ items, error, onViewFull, onRetry }) {
   const renderRows = () => {
-    if (items && items.length) {
+    if (items?.length) {
       return items.map((it, idx) => (
-        <div key={idx} className="flex justify-between py-2 px-3 bg-zinc-800/30 rounded-lg">
+        <div key={it.rank || idx} className="flex justify-between py-2 px-3 bg-zinc-800/30 rounded-lg">
           <span className="font-medium">#{it.rank} {it.name}</span>
           <span className="font-bold text-[#c1a362]">{it.points} pts</span>
         </div>
@@ -52,7 +52,7 @@ export default function TopFivePreview({ items, loading, error, onViewFull, onRe
 
       {error ? (
         <ErrorMessage message={error.message || "Failed to load leaderboard."} onRetry={onRetry} />
-      ) : loading ? (
+      ) : !items ? (
         <div className="space-y-3">
           {Array.from({ length: 5 }).map((_, i) => (
             <div key={i} className="flex justify-between py-2 px-3 bg-zinc-800/30 rounded-lg">

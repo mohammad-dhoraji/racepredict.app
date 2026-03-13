@@ -13,6 +13,14 @@ export default function Layout() {
   const [initials, setInitials] = useState("");
 
   useEffect(() => {
+    if (!import.meta.env.DEV) return undefined;
+    console.debug("[stability] Layout mounted");
+    return () => {
+      console.debug("[stability] Layout unmounted");
+    };
+  }, []);
+
+  useEffect(() => {
     const loadProfile = async () => {
       const {
         data: { user },
@@ -58,7 +66,7 @@ export default function Layout() {
             <Avatar
               className="cursor-pointer hover:ring-2 hover:ring-red-500 transition"
               size="lg"
-              onClick={() => navigate("/profile")}
+              onClick={() => navigate("/home/profile")}
             >
               {avatarUrl && <AvatarImage src={avatarUrl} alt={`${initials} avatar`} />}
 

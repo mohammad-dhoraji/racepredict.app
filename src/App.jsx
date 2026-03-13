@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -18,11 +19,31 @@ import Login from "./pages/Login";
 import Rules from "./pages/Rules";
 import NotFound from "./pages/NotFound";
 import Onboarding from "./pages/Onboarding";
+import LandingPage from "./pages/LandingPage";
 import PublicOnly from "./components/PublicOnly";
 
 function App() {
+  useEffect(() => {
+    if (!import.meta.env.DEV) return undefined;
+    console.debug("[stability] App mounted");
+    return () => {
+      console.debug("[stability] App unmounted");
+    };
+  }, []);
+
   return (
     <Routes>
+      {/* Public: Landing page — redirects to /home if authenticated */}
+      <Route
+        path="/"
+        element={
+          <PublicOnly>
+            <LandingPage />
+          </PublicOnly>
+        }
+      />
+
+      {/* Public: Login page */}
       <Route
         path="/login"
         element={
@@ -45,8 +66,9 @@ function App() {
         }
       />
 
+      {/* Protected app routes — all under /home */}
       <Route
-        path="/"
+        path="/home"
         element={
           <ProtectedRoute>
             <UsernameGuard>
@@ -68,7 +90,6 @@ function App() {
 
       <Route path="*" element={<NotFound />} />
     </Routes>
-    
   );
 }
 

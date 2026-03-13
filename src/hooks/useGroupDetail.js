@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getGroupDetail } from "../services/groupsService";
 
 export const useGroupDetail = (groupId) =>
@@ -6,6 +6,7 @@ export const useGroupDetail = (groupId) =>
     queryKey: ["group", groupId],
     queryFn: () => getGroupDetail(groupId),
     enabled: typeof groupId === "string" && groupId.length > 0,
+    placeholderData: keepPreviousData,
     staleTime: 15000,
     gcTime: 5 * 60 * 1000,
     retry: (failureCount, error) => {

@@ -2,7 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Button from "../components/Button";
 import DriverSelect from "../components/DriverSelect";
 import Modal from "../components/Modal";
+
 import { apiPost, apiRequest } from "../lib/api";
+import CalendarModal from "../components/CalendarModal";
+
+
 
 const EMPTY_PREDICTION = {
   p1: "",
@@ -63,7 +67,10 @@ const Prediction = () => {
   const [submitting, setSubmitting] = useState(false);
   const [prediction, setPrediction] = useState(EMPTY_PREDICTION);
   const [hasExistingPrediction, setHasExistingPrediction] = useState(false);
+
   const [modal, setModal] = useState(CLOSED_MODAL);
+  const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+
 
   const openModal = useCallback((type, title, message) => {
     setModal({ isOpen: true, type, title, message });
@@ -89,7 +96,7 @@ const Prediction = () => {
 
     try {
       const [nextRace, driverPayload] = await Promise.all([
-        apiRequest("/api/races/next"),
+        apiRequest("/api/races/current"),
         apiRequest("/api/predictions/drivers"),
       ]);
 
@@ -261,6 +268,7 @@ const Prediction = () => {
 
   return (
     <>
+
       <Modal
         isOpen={modal.isOpen}
         onClose={closeModal}
@@ -268,6 +276,12 @@ const Prediction = () => {
         title={modal.title}
         message={modal.message}
       />
+      <CalendarModal
+        isOpen={isCalendarModalOpen}
+        onClose={() => setIsCalendarModalOpen(false)}
+        race={race}
+      />
+
 
       <div className="min-h-screen bg-gradient-to-b from-neutral-800 via-neutral-950 to-black text-white px-6 py-12 w-full">
         <div className="max-w-5xl mx-auto">
@@ -338,24 +352,36 @@ const Prediction = () => {
               />
             </div>
 
-            {!isLocked ? (
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+              {!isLocked ? (
+                <Button
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                  loading={submitting}
+                  className="w-full sm:w-auto"
+                >
+                  {submitting
+                    ? "Saving..."
+                    : hasExistingPrediction
+                      ? "Update Prediction"
+                      : "Submit Prediction"}
+                </Button>
+              ) : (
+                <div className="text-red-400 font-medium text-center">
+                  Predictions locked
+                </div>
+              )}
               <Button
-                onClick={handleSubmit}
-                disabled={submitting}
-                loading={submitting}
-                className="w-full md:w-auto mx-auto block"
+                variant="secondary"
+                onClick={() => setIsCalendarModalOpen(true)}
+                className="w-full sm:w-auto px-6"
+                disabled={isLocked}
               >
-                {submitting
-                  ? "Saving..."
-                  : hasExistingPrediction
-                    ? "Update Prediction"
-                    : "Submit Prediction"}
+                Add to Calendar
               </Button>
-            ) : (
-              <div className="text-red-400 font-medium text-center">
-                Predictions locked
-              </div>
-            )}
+            </div>
+
           </div>
         </div>
       </div>

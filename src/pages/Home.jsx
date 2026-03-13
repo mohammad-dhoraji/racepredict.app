@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageWrapper from "../components/PageWrapper";
 import Button from "../components/Button";
@@ -17,13 +17,20 @@ const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
 ).replace(/\/+$/, "");
 
-const CALENDAR_FEED_URL = `${API_BASE_URL}/api/calendar/predictions.ics`;
-const GOOGLE_CALENDAR_URL = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(CALENDAR_FEED_URL)}`;
-const APPLE_CALENDAR_URL = CALENDAR_FEED_URL.replace(/^https?:\/\//i, "webcal://");
+
+
 
 function Home() {
   const navigate = useNavigate();
   const [isCalendarModalOpen, setIsCalendarModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) return undefined;
+    console.debug("[stability] Home mounted");
+    return () => {
+      console.debug("[stability] Home unmounted");
+    };
+  }, []);
 
   const { race, loading: raceLoading, error: raceError, refetch: refetchRace } = useNextRace();
   const { items: topItems, loading: topLoading, error: topError, refetch: refetchTop } = useTopFive();
@@ -44,7 +51,7 @@ function Home() {
             Earn points based on accuracy.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <Button className="px-6 py-3 text-lg" onClick={() => navigate("/predict")}>
+            <Button className="px-6 py-3 text-lg" onClick={() => navigate("/home/predict")}>
               Make Prediction
             </Button>
             <Button
@@ -57,22 +64,22 @@ function Home() {
         </section>
 
         {/* Upcoming Race Section  */}
-        <NextRaceCard race={race} loading={raceLoading} error={raceError} onEdit={() => navigate("/predict")} onRetry={refetchRace} />
+        <NextRaceCard race={race} loading={raceLoading} error={raceError} onEdit={() => navigate("/home/predict")} onRetry={refetchRace} />
 
         {/* User Snapshot + Leaderboard */}
         <section className="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
           <UserSnapshot stats={stats} loading={statsLoading} error={statsError} onRetry={refetchStats} />
-          <TopFivePreview items={topItems} loading={topLoading} error={topError} onViewFull={() => navigate("/leaderboard")} onRetry={refetchTop} />
+          <TopFivePreview items={topItems} loading={topLoading} error={topError} onViewFull={() => navigate("/home/leaderboard")} onRetry={refetchTop} />
         </section>
       </div>
+
 
       <CalendarModal
         isOpen={isCalendarModalOpen}
         onClose={() => setIsCalendarModalOpen(false)}
-        googleUrl={GOOGLE_CALENDAR_URL}
-        appleUrl={APPLE_CALENDAR_URL}
-        icsUrl={CALENDAR_FEED_URL}
+        race={race}
       />
+
     </PageWrapper>
   );
 }

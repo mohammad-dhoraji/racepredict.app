@@ -44,9 +44,16 @@ const GroupDetail = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [actionMessage, setActionMessage] = useState(null);
 
+  useEffect(() => {
+    if (!import.meta.env.DEV) return undefined;
+    console.debug("[stability] GroupDetail mounted", { groupId });
+    return () => {
+      console.debug("[stability] GroupDetail unmounted", { groupId });
+    };
+  }, [groupId]);
+
   const {
     data: group,
-    isLoading,
     isFetching,
     isError,
     error,
@@ -95,7 +102,7 @@ const GroupDetail = () => {
       await queryClient.invalidateQueries({ queryKey: ["groups"] });
       queryClient.removeQueries({ queryKey: ["group", groupId] });
 
-      navigate("/groups");
+      navigate("/home/groups");
     } catch (err) {
       setActionMessage({
         type: "error",
@@ -119,7 +126,7 @@ const GroupDetail = () => {
       // Invalidate groups cache and redirect
       await queryClient.invalidateQueries({ queryKey: ["groups"] });
       await queryClient.invalidateQueries({ queryKey: ["group", groupId] });
-      navigate("/groups");
+      navigate("/home/groups");
     } catch (err) {
       setActionMessage({
         type: "error",
@@ -132,7 +139,7 @@ const GroupDetail = () => {
   };
   useEffect(() => {
     if (isError && error?.status === 403) {
-      navigate("/groups", { replace: true });
+      navigate("/home/groups", { replace: true });
     }
   }, [isError, error, navigate]);
   return (
@@ -142,7 +149,7 @@ const GroupDetail = () => {
         <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-6 sm:p-10 shadow-2xl shadow-black/40">
           <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
 
-          {isLoading && <GroupDetailSkeleton />}
+          {!group && !isError && <GroupDetailSkeleton />}
 
           {isError && (
             <div className="space-y-4">
@@ -160,7 +167,7 @@ const GroupDetail = () => {
             </div>
           )}
 
-          {!isLoading && !isError && group && (
+          {group && !isError && (
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
               <div className="min-w-0">
                 <h1 className="text-2xl sm:text-4xl font-extrabold wrap-break-word">
@@ -218,7 +225,7 @@ const GroupDetail = () => {
         </div>
 
         {/* LEADERBOARD SECTION */}
-        {!isLoading && !isError && group && (
+        {group && !isError && (
           <>
             <div>
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">

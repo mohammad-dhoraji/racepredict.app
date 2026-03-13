@@ -24,11 +24,11 @@ export function AppSidebar() {
   const [initials, setInitials] = useState("");
 
   const menuItems = [
-    { label: "Home", path: "/" },
-    { label: "Predict", path: "/predict" },
-    { label: "Drivers", path: "/drivers" },
-    { label: "Groups", path: "/groups" },
-    { label: "Leaderboard", path: "/leaderboard" },
+    { label: "Home", path: "/home" },
+    { label: "Predict", path: "/home/predict" },
+    { label: "Drivers", path: "/home/drivers" },
+    { label: "Groups", path: "/home/groups" },
+    { label: "Leaderboard", path: "/home/leaderboard" },
   ];
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export function AppSidebar() {
       <SidebarFooter className="mt-auto border-t border-zinc-800 p-4 space-y-3">
         {/* Profile */}
         <div
-          onClick={() => handleNavigate("/profile")}
+          onClick={() => handleNavigate("/home/profile")}
           className="flex items-center gap-3 p-3 rounded-xl hover:bg-zinc-800 cursor-pointer transition"
         >
           <Avatar>

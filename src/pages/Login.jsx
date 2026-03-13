@@ -4,9 +4,9 @@ import { signIn, signUp, signInWithGoogle } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
 const sanitizeRedirectPath = (path) => {
-  if (typeof path !== "string" || path.length === 0) return "/";
-  if (!path.startsWith("/")) return "/";
-  if (path.startsWith("//")) return "/";
+  if (typeof path !== "string" || path.length === 0) return "/home";
+  if (!path.startsWith("/")) return "/home";
+  if (path.startsWith("//")) return "/home";
   return path;
 };
 

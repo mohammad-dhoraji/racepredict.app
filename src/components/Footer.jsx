@@ -21,22 +21,22 @@ function Footer() {
           <h4 className="text-white font-medium mb-3">Navigation</h4>
           <ul className="space-y-2">
             <li>
-              <Link to="/" className="hover:text-white transition">
+              <Link to="/home" className="hover:text-white transition">
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/predict" className="hover:text-white transition">
+              <Link to="/home/predict" className="hover:text-white transition">
                 Make Prediction
               </Link>
             </li>
             <li>
-              <Link to="/leaderboard" className="hover:text-white transition">
+              <Link to="/home/leaderboard" className="hover:text-white transition">
                 Leaderboard
               </Link>
             </li>
             <li>
-              <Link to="/rules" className="hover:text-white transition">
+              <Link to="/home/rules" className="hover:text-white transition">
                 Scoring Rules
               </Link>
             </li>

@@ -97,7 +97,7 @@ function Onboarding() {
         return;
       }
 
-      navigate("/profile");
+      navigate("/home/profile");
     } finally {
       setLoading(false);
     }

@@ -6,8 +6,9 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
+  fontFamily: {
         f1: ["FormulaOne", "sans-serif"],
+        display: ["FormulaOne", "sans-serif"],
       },
       keyframes: {
         loadingBar: {

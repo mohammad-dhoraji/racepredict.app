@@ -7,6 +7,7 @@ function NoUsernameOnly({ children }) {
   const { user, loading } = useAuth();
   const [checking, setChecking] = useState(true);
   const [hasUsername, setHasUsername] = useState(false);
+  const userId = user?.id ?? null;
 
   useEffect(() => {
     let isMounted = true;
@@ -14,7 +15,7 @@ function NoUsernameOnly({ children }) {
     const checkProfile = async () => {
       setChecking(true);
 
-      if (!user) {
+      if (!userId) {
         if (isMounted) {
           setChecking(false);
           setHasUsername(false);
@@ -25,7 +26,7 @@ function NoUsernameOnly({ children }) {
       const { data, error } = await supabase
         .from("profiles")
         .select("username")
-        .eq("id", user.id)
+        .eq("id", userId)
         .maybeSingle();
 
       if (!isMounted) return;
@@ -46,7 +47,7 @@ function NoUsernameOnly({ children }) {
     return () => {
       isMounted = false;
     };
-  }, [user, loading]);
+  }, [userId, loading]);
 
   if (loading || checking) {
     return (
@@ -58,7 +59,7 @@ function NoUsernameOnly({ children }) {
 
   // Redirect to home if user already has a username
   if (hasUsername) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/home" replace />;
   }
 
   return children;

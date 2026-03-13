@@ -8,13 +8,48 @@ const optionClassName = `
   active:scale-[0.98]
 `;
 
+
 export default function CalendarModal({
   isOpen,
   onClose,
-  googleUrl,
-  appleUrl,
-  icsUrl,
+  race,
 }) {
+  const API_BASE_URL = (
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:3000"
+  ).replace(/\/+$/, "");
+
+  const isSingleRace = !!race;
+  const predictionsIcsUrl = `${API_BASE_URL}/api/calendar/predictions.ics`;
+  const icsUrl = isSingleRace 
+    ? `${API_BASE_URL}/api/calendar/${race.id}.ics`
+    : predictionsIcsUrl;
+  const appleUrl = icsUrl.replace(/^https?:\/\//i, "webcal://");
+
+  let googleUrl;
+  if (isSingleRace && race.race_time) {
+    const start = new Date(race.race_time);
+    const end = new Date(start.getTime() + 30 * 60 * 1000);
+    const formatDate = (date) => {
+      const year = date.getUTCFullYear();
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const hours = String(date.getUTCHours()).padStart(2, '0');
+      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+      return `${year}${month}${day}T${hours}${minutes}00Z`;
+    };
+    const startStr = formatDate(start);
+    const endStr = formatDate(end);
+    const title = encodeURIComponent(`${race.name} Prediction Lock`);
+    const details = encodeURIComponent([
+      "Submit your F1 prediction before the race starts.",
+      "",
+      race.predictionUrl || `${API_BASE_URL}/predict/${race.id}`
+    ].join("\\n"));
+    googleUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&dates=${startStr}/${endStr}&text=${title}&details=${details}&location=${encodeURIComponent(API_BASE_URL)}/predict/${race.id}`;
+  } else {
+    googleUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(predictionsIcsUrl)}`;
+  }
+
   useEffect(() => {
     if (!isOpen) return undefined;
 

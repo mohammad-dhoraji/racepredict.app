@@ -13,12 +13,10 @@ const getFlagSrc = (countryCode) => {
 };
 export default function NextRaceCard({
   race,
-  loading,
   error,
   onEdit,
   onRetry,
-})
- {
+}) {
   return (
     <section className="max-w-5xl mx-auto mb-14">
       <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40">
@@ -26,9 +24,15 @@ export default function NextRaceCard({
 
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-semibold tracking-wide">Next Race</h2>
-          <span className="px-4 py-1.5 text-xs tracking-widest rounded-full font-bold bg-emerald-600/20 text-emerald-400 border border-emerald-500/30">
-            OPEN
-          </span>
+          {race?.status === "upcoming" ? (
+            <span className="px-4 py-1.5 text-xs tracking-widest rounded-full font-bold bg-emerald-600/20 text-emerald-400 border border-emerald-500/30">
+              Predictions Open
+            </span>
+          ) : race?.status === "locked" ? (
+            <span className="px-4 py-1.5 text-xs tracking-widest rounded-full font-bold bg-red-600/20 text-red-400 border border-red-500/30">
+              🔒 Predictions Locked
+            </span>
+          ) : null}
         </div>
 
         {error ? (
@@ -36,7 +40,7 @@ export default function NextRaceCard({
             message={error.message || "Failed to load next race."}
             onRetry={onRetry}
           />
-        ) : loading ? (
+        ) : !race ? (
           <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
             <div className="w-24 h-24 bg-zinc-700/40 rounded" />
             <div className="flex-1 text-center md:text-left">
@@ -63,27 +67,26 @@ export default function NextRaceCard({
             />
 
             <div className="flex-1 text-center md:text-left">
-              <h3 className="text-2xl font-bold mb-3">{race?.name || "TBA"}</h3>
+              <h3 className="text-2xl font-bold mb-3">{race.name}</h3>
               <p className="text-zinc-400 mb-2">
-                {race
-                  ? new Date(race.race_date).toLocaleString("en-IN", {
-                      timeZone: "Asia/Kolkata",
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    })
-                  : "TBA"}
+                {new Date(race.race_date).toLocaleString("en-IN", {
+                  timeZone: "Asia/Kolkata",
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                })}
               </p>
               <p className="text-[#c1a362] font-semibold">
-                Closes in:{" "}
-                {race ? <Countdown target={race.race_date} /> : "TBA"}
+                Closes in: <Countdown target={race.race_date} />
               </p>
             </div>
 
-            <div>
-              <Button className="px-5 py-2" onClick={onEdit}>
-                Make Prediction
-              </Button>
-            </div>
+            {race?.status === "upcoming" && (
+              <div>
+                <Button className="px-5 py-2" onClick={onEdit}>
+                  Make Prediction
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>

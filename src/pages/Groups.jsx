@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import PageWrapper from "../components/PageWrapper";
@@ -41,6 +41,14 @@ const Groups = () => {
   const { data, isLoading, isFetching, isError, error, refetch } =
     useMyGroups();
 
+  useEffect(() => {
+    if (!import.meta.env.DEV) return undefined;
+    console.debug("[stability] Groups mounted");
+    return () => {
+      console.debug("[stability] Groups unmounted");
+    };
+  }, []);
+
   const normalizedJoinToken = useMemo(() => joinToken.trim(), [joinToken]);
   const groups = useMemo(() => data?.groups || [], [data]);
   const hasGroups = groups.length > 0;
@@ -81,7 +89,7 @@ const Groups = () => {
               </div>
             </div>
 
-            {isLoading && <GroupsSkeleton />}
+            {!data?.groups && !isError && <GroupsSkeleton />}
 
             {isError && (
               <div className="space-y-4">
@@ -93,11 +101,11 @@ const Groups = () => {
               </div>
             )}
 
-            {!isLoading && !isError && !hasGroups && (
+            {data?.groups && !isError && !hasGroups && (
               <p className="text-zinc-500">No groups yet. Create your first group on Gridlock.</p>
             )}
 
-            {!isLoading && !isError && hasGroups && (
+            {data?.groups && !isError && hasGroups && (
               <div className="space-y-4">
                 {groups.map((group) => (
                   <div
@@ -149,7 +157,7 @@ const Groups = () => {
             <h2 className="text-lg font-semibold mb-6">Create or Join</h2>
 
               <div className="flex flex-col md:flex-row gap-6">
-              <Button onClick={() => navigate("/groups/create")}>
+              <Button onClick={() => navigate("/home/groups/create")}>
                 <span className="flex items-center gap-2">
                   <Plus size={16} />
                   Create Group

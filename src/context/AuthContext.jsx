@@ -1,61 +1,103 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { supabase } from "../lib/supabaseClient";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabaseClient";
 
 const AuthContext = createContext(null);
 
+const isSafeRedirectPath = (path) => {
+  if (typeof path !== "string" || path.length === 0) return false;
+  if (!path.startsWith("/")) return false;
+  if (path.startsWith("//")) return false;
+  if (path.includes("\\")) return false;
+  if (path.includes("://")) return false;
+  if (path.includes("../") || /%2e%2e/i.test(path)) return false;
+  if (path.length > 200) return false;
+  return true;
+};
+
+const getUserIdentity = (user) => {
+  if (!user) return "anonymous";
+  return `${user.id}:${user.updated_at ?? ""}`;
+};
+
 export function AuthProvider({ children }) {
+  const [session, setSession] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
   const navigateRef = useRef(navigate);
+  const userIdentityRef = useRef(getUserIdentity(null));
 
-  // keep a stable ref to navigate so effects don't re-subscribe on navigation
   useEffect(() => {
     navigateRef.current = navigate;
   }, [navigate]);
 
-  const isSafeRedirectPath = (path) => {
-    if (typeof path !== "string" || path.length === 0) return false;
-    if (!path.startsWith("/")) return false;
-    if (path.startsWith("//")) return false;
-    if (path.includes("\\")) return false;
-    if (path.includes("://")) return false;
-    if (path.includes("../") || /%2e%2e/i.test(path)) return false;
-    if (path.length > 200) return false;
-    return true;
-  };
+  useEffect(() => {
+    if (!import.meta.env.DEV) return undefined;
+    console.debug("[stability] AuthProvider mounted");
+    return () => {
+      console.debug("[stability] AuthProvider unmounted");
+    };
+  }, []);
 
-  // 🔥 AUTH SESSION ONLY
+  const applyAuthSnapshot = useCallback((nextSession) => {
+    const normalizedSession = nextSession ?? null;
+    const nextUser = normalizedSession?.user ?? null;
+    const nextIdentity = getUserIdentity(nextUser);
+    const userChanged = userIdentityRef.current !== nextIdentity;
+
+    if (userChanged) {
+      userIdentityRef.current = nextIdentity;
+      setUser(nextUser);
+      setSession(normalizedSession);
+    }
+
+    return { userChanged, nextUser };
+  }, []);
+
   useEffect(() => {
     let mounted = true;
 
     const initialize = async () => {
       const {
-        data: { session },
+        data: { session: initialSession },
       } = await supabase.auth.getSession();
 
       if (!mounted) return;
 
-      setUser(session?.user ?? null);
-      setLoading(false); // ✅ Loading ends here
+      applyAuthSnapshot(initialSession);
+      setLoading(false);
     };
 
     initialize();
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, nextSession) => {
       if (!mounted) return;
 
-      setUser(session?.user ?? null);
-      setLoading(false);
+      const { userChanged, nextUser } = applyAuthSnapshot(nextSession);
+      setLoading((previous) => (previous ? false : previous));
 
-      // Handle OAuth redirect path
-      if (session?.user && _event === "SIGNED_IN") {
+      if (import.meta.env.DEV) {
+        console.debug("[auth] event", event, {
+          userChanged,
+          userId: nextUser?.id ?? null,
+        });
+      }
+
+      if (event === "SIGNED_IN" && userChanged && nextUser) {
         const redirectPath = sessionStorage.getItem("authRedirect");
         if (redirectPath && isSafeRedirectPath(redirectPath)) {
-          // mark that a redirect is pending so username-check doesn't race
           sessionStorage.setItem("authRedirectPending", "1");
           sessionStorage.removeItem("authRedirect");
           navigateRef.current?.(redirectPath, { replace: true });
@@ -67,38 +109,50 @@ export function AuthProvider({ children }) {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [applyAuthSnapshot]);
 
-  // 🔥 USERNAME CHECK (SEPARATE)
+  const userId = user?.id ?? null;
+
   useEffect(() => {
-    if (!user) return;
+    if (!userId) return;
+
+    let cancelled = false;
 
     const checkUsername = async () => {
       const { data } = await supabase
         .from("profiles")
         .select("username")
-        .eq("id", user.id)
+        .eq("id", userId)
         .single();
 
-      // If a redirect is pending (handled by SIGNED_IN), skip onboarding navigation
+      if (cancelled) return;
+
       if (!data?.username) {
         const pending = sessionStorage.getItem("authRedirectPending");
         if (pending) return;
 
-        // perform onboarding navigation and clear any pending marker
         navigateRef.current?.("/onboarding");
         sessionStorage.removeItem("authRedirectPending");
       }
     };
 
     checkUsername();
-  }, [user]);
 
-  return (
-    <AuthContext.Provider value={{ user, loading }}>
-      {children}
-    </AuthContext.Provider>
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  const value = useMemo(
+    () => ({
+      session,
+      user,
+      loading,
+    }),
+    [session, user, loading],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

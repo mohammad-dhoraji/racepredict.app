@@ -17,13 +17,13 @@ const NotFound = () => {
           </p>
 
           <div className="flex gap-4">
-            <Button onClick={() => navigate("/")}>
+            <Button onClick={() => navigate("/home")}>
               Go Home
             </Button>
 
             <Button
               className="bg-zinc-700 hover:bg-zinc-600"
-              onClick={() => navigate("/leaderboard")}
+              onClick={() => navigate("/home/leaderboard")}
             >
               View Leaderboard
             </Button>

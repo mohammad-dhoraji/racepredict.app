@@ -65,7 +65,7 @@ export default function JoinGroup() {
         } catch (err) {
           console.error("Failed to refresh groups after join:", err);
         }
-        navigate("/groups", { replace: true });
+        navigate("/home/groups", { replace: true });
     } catch (error) {
         // If unauthorized, redirect to login flow instead of showing a retry message
         if (error?.status === 401) {
