@@ -13,13 +13,14 @@ function Navbar() {
       </h1>
       <div className="flex gap-4 flex-1 justify-center">
         <NavLink
-        to="/home"
-        className={({ isActive }) =>
-          `${base} ${isActive ? active : "text-white"}`
-        }
-      >
-        Home
-      </NavLink>
+          end
+          to="/home"
+          className={({ isActive }) =>
+            `${base} ${isActive ? active : "text-white"}`
+          }
+        >
+          Home
+        </NavLink>
 
       <NavLink
         to="/home/groups"

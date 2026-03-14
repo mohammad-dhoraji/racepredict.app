@@ -121,7 +121,7 @@ const Groups = () => {
                         </p>
                       </div>
 
-                      <Button onClick={() => navigate(`/groups/${group.id}`)}>
+                      <Button onClick={() => navigate(`/home/groups/${group.id}`)}>
                         Open
                       </Button>
                     </div>
