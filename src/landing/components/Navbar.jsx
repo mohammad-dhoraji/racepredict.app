@@ -15,7 +15,7 @@ const Navbar = () => {
         </span>
         <a href="/login">
           <LandingButton variant="racing" size="sm">
-            Enter App
+            Login
           </LandingButton>
         </a>
       </div>
