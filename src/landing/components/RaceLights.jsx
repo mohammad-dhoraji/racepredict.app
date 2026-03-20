@@ -1,7 +1,7 @@
 import { motion as Motion } from "framer-motion";
 
 const RaceLights = ({ className = "" }) => {
-  const lights = [0, 1, 2, 3, 4];
+  const lights = [ 1, 2, 3, 4];
 
   return (
     <div className={`mb-12 flex justify-center gap-3 ${className}`.trim()}>
