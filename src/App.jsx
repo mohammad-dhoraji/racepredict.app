@@ -22,6 +22,7 @@ import Onboarding from "./pages/Onboarding";
 import LandingPage from "./pages/LandingPage";
 import CalendarPage from "./pages/CalendarPage";
 import PublicOnly from "./components/PublicOnly";
+import Privacy from "./pages/privacy";
 
 function App() {
   useEffect(() => {
@@ -43,6 +44,8 @@ function App() {
           </PublicOnly>
         }
       />
+
+      <Route path="/privacy" element={<Privacy />} />
       <Route path="/calendar" element={<CalendarPage />} />
 
       {/* Public: Login page */}

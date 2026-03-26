@@ -13,6 +13,9 @@ const Footer = () => {
         <p className="font-mono text-[10px] text-muted-foreground/30 uppercase tracking-wider">
           Not affiliated with Formula 1 or FIA
         </p>
+        <a href="/privacy" className="ont-mono text-[10px] text-muted-foreground/30 uppercase tracking-wider">
+          Privacy Policy
+        </a>
       </div>
     </footer>
   );
