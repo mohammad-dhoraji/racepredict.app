@@ -1,10 +1,7 @@
 import React from 'react';
 
 const PerformanceSnapshotSkeleton = ({ className = '' }) => (
-  <div className={`w-full h-64 rounded-2xl animate-pulse bg-zinc-900/70 border border-zinc-800 shadow-2xl overflow-hidden ${className}`}>
-    {/* Gradient top bar */}
-    <div className="absolute -top-1 left-0 w-full h-0.75 bg-gradient-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
-    
+  <div className={`w-full h-64 animate-pulse overflow-hidden ${className}`}>
     <div className="relative h-full p-10">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">

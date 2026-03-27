@@ -1,9 +1,7 @@
 import React from 'react';
 
 const GroupDetailHeaderSkeleton = ({ className = '' }) => (
-  <div className={`relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-6 sm:p-10 shadow-2xl shadow-black/40 animate-pulse ${className}`}>
-    <div className="absolute -top-1 left-0 w-full h-0.75 bg-gradient-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl bg-zinc-800/50" />
-    
+  <div className={`animate-pulse ${className}`}>
     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
       <div className="min-w-0">
         <div className="h-12 w-64 mb-2 bg-zinc-800/50 rounded-xl" />

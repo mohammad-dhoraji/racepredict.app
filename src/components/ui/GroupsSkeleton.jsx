@@ -12,15 +12,15 @@ const GroupsSkeleton = ({ className = '' }) => (
     {/* Groups Grid */}
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-8">
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5">
+        <div key={i}>
           <div className="h-6 w-40 mb-2 bg-zinc-800/50 rounded" />
           <div className="h-4 w-24 bg-zinc-800/30 rounded" />
         </div>
       ))}
     </div>
 
-    {/* Actions Card */}
-    <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6">
+    {/* Actions */}
+    <div>
       <div className="h-6 w-32 mb-6 bg-zinc-800/50 rounded" />
       <div className="flex flex-col md:flex-row gap-6">
         <div className="h-12 w-full md:w-48 bg-zinc-800/50 rounded-xl" />

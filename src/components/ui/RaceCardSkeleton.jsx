@@ -2,7 +2,7 @@ import React from 'react';
 import Skeleton  from '../Skeleton';
 
 const RaceCardSkeleton = ({ className = '' }) => (
-  <div className={`group relative flex flex-col justify-between overflow-hidden rounded-lg border p-5 transition-all duration-200 min-h-[200px] border-border bg-card animate-pulse ${className}`}>
+  <div className={`animate-pulse ${className}`}>
     {/* Top row */}
     <div className="flex items-start justify-between">
       <div className="space-y-3">

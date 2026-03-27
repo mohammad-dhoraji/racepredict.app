@@ -2,9 +2,7 @@ import React from 'react';
 import Skeleton from '../Skeleton';
 
 const NextRaceSkeleton = ({ className = '' }) => (
-  <div className={`bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-10 shadow-2xl shadow-black/40 relative animate-pulse ${className}`}>
-    <div className="absolute -top-1 left-0 w-full h-0.75 bg-gradient-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl bg-neutral-800" />
-
+  <div className={`animate-pulse ${className}`}>
     {/* Header */}
     <div className="flex items-center justify-between mb-8">
       <Skeleton className="h-8 w-32" />
