@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from "react";
 
 function formatDiff(ms) {
-  if (ms <= 0) return "00:00:00";
+  if (ms <= 0) return "Live";
 
   const totalSeconds = Math.floor(ms / 1000);
 
+  const days = Math.floor(totalSeconds / 86400);
+
+  // 👉 If more than 24 hours → show only days
+  if (days >= 1) {
+    return `${days} day${days !== 1 ? "s" : ""}`;
+  }
+
+  // 👉 If within 24 hours → show full countdown
   const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
   const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
   const seconds = String(totalSeconds % 60).padStart(2, "0");
 
-  return `${hours}:${minutes}:${seconds}`;
+  return `${hours} : ${minutes} : ${seconds}`;
 }
 
 export default function Countdown({ target }) {

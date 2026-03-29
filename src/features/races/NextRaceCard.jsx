@@ -107,7 +107,7 @@ export default function NextRaceCard({
                   <p className="text-xs uppercase tracking-widest text-white mb-2">
                     Race starts in
                   </p>
-                  <div className="text-2xl md:text-5xl font-f1 font-bold text-red-400/90">
+                  <div className="text-2xl md:text-5xl font-f1 font-bold text-white ">
                     <Countdown target={race.race_date} />
                   </div>
                 </div>
