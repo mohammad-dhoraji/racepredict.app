@@ -298,7 +298,7 @@ const UpcomingRace = () => {
         carRef={carRef}
         drawablePathRef={drawablePathRef}
         motionPathRef={motionPathRef}
-        race={displayRace}
+        race={race}
         trackPath={trackPath}
         trackViewBox={trackViewBox}
       />
