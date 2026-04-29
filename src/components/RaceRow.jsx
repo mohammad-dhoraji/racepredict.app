@@ -1,6 +1,5 @@
 import React from "react";
 import Countdown from "./Countdown";
-import Loader from "./Loader";
 
 
 
@@ -15,11 +14,7 @@ const formatDate = (dateStr) => {
 
 export default function RaceRow({ race, index, isNext = false }) {
   if (!race) {
-    return (
-      <div className="h-20 flex items-center justify-center">
-        <Loader size="small" text="SYNCING RACE DATA..." />
-      </div>
-    );
+    return null;
   }
 
   const isUpcoming = race.race_state === "upcoming";

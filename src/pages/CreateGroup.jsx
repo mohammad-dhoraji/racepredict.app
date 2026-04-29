@@ -120,7 +120,6 @@ export default function CreateGroup() {
                 type="submit"
                 disabled={loading}
                 loading={loading}
-                loadingText="Creating"
                 className="w-full"
               >
                 Create Group

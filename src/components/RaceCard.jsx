@@ -47,11 +47,9 @@
         ),
         };
 
-import RaceCardSkeleton from './ui/RaceCardSkeleton';
-
 const RaceCard = ({ race, isNext }) => {
   if (!race) {
-    return <RaceCardSkeleton />;
+    return null;
   }
         const isCompleted = race.race_state === 'results_ready' || race.race_state === 'scored';
         const isLocked = race.race_state === 'locked';

@@ -1,11 +1,9 @@
 import React from "react";
-import LeaderboardPreviewSkeleton from "../../components/ui/LeaderboardPreviewSkeleton";
 import ErrorMessage from "../../components/ErrorMessage";
 
 // items: [{ rank, name, points }]
 export default function TopFivePreview({
   items,
-  loading = false,
   error,
   onViewFull,
   onRetry,
@@ -41,9 +39,7 @@ export default function TopFivePreview({
         </span>
       </div>
 
-      {loading ? (
-        <LeaderboardPreviewSkeleton />
-      ) : error ? (
+      {error ? (
         <ErrorMessage
           message={error.message || "Failed to load leaderboard."}
           onRetry={onRetry}

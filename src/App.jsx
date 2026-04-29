@@ -23,6 +23,7 @@ import LandingPage from "./pages/LandingPage";
 import CalendarPage from "./pages/CalendarPage";
 import PublicOnly from "./components/PublicOnly";
 import Privacy from "./pages/privacy";
+import TierList from "./pages/TierList";
 
 function App() {
   useEffect(() => {
@@ -47,6 +48,7 @@ function App() {
 
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/calendar" element={<CalendarPage />} />
+      <Route path="/tier-list" element={<TierList />} />
 
       {/* Public: Login page */}
       <Route

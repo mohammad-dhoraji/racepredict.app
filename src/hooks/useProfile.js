@@ -4,16 +4,6 @@ import {
   getUserPredictions,
 } from "../services/profileService";
 
-const EMPTY_SUMMARY = {
-  username: "Guest",
-  totalPoints: 0,
-  accuracy: 0,
-  correctPredictions: 0,
-  totalPredictions: 0,
-  lastRaceScore: 0,
-  globalRank: null,
-};
-
 const PROFILE_STALE_TIME = 1000 * 60 * 5;
 const PROFILE_GC_TIME = 1000 * 60 * 30;
 
@@ -52,8 +42,8 @@ export function useProfile({ includePredictions = true } = {}) {
   };
 
   return {
-    summary: summaryQuery.data || EMPTY_SUMMARY,
-    predictions: includePredictions ? predictionsQuery.data || [] : [],
+    summary: summaryQuery.data ?? null,
+    predictions: includePredictions ? predictionsQuery.data ?? null : [],
     loading,
     error: error || null,
     errorMessage: error?.message || null,
@@ -62,4 +52,3 @@ export function useProfile({ includePredictions = true } = {}) {
     refetchPredictions: predictionsQuery.refetch,
   };
 }
-

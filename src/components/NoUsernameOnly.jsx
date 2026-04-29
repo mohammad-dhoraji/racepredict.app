@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../lib/supabaseClient";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Loader from "./Loader";
+import { supabase } from "../lib/supabaseClient";
+import RouteGateLoader from "./RouteGateLoader";
 
 function NoUsernameOnly({ children }) {
   const { user, loading } = useAuth();
@@ -51,10 +51,9 @@ function NoUsernameOnly({ children }) {
   }, [userId, loading]);
 
   if (loading || checking) {
-    return <Loader fullScreen />;
+    return <RouteGateLoader subtitle="Checking your onboarding status..." />;
   }
 
-  // Redirect to home if user already has a username
   if (hasUsername) {
     return <Navigate to="/home" replace />;
   }

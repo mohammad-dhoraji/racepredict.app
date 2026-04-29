@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import ApiMessage from "../components/ApiMessage";
 import Button from "../components/Button";
-import Loader from "../components/Loader";
 import { apiPost } from "../lib/api";
 
 const INVITE_TOKEN_REGEX = /^[A-Za-z0-9]{8,12}$/;
@@ -110,13 +109,6 @@ export default function JoinGroup() {
           <p className="mt-2 text-zinc-400">Invite token: {normalizedToken || "N/A"}</p>
 
           <div className="mt-8 space-y-4">
-            {loading ? (
-              <div className="flex items-center gap-2 text-sm text-zinc-200">
-                <Loader as="span" size="small" showProgress={false} showText={false} />
-                <span>Joining group...</span>
-              </div>
-            ) : null}
-
             {!loading && <ApiMessage variant="info" message={infoMessage} />}
             <ApiMessage variant="error" message={errorMessage} />
 
@@ -124,7 +116,6 @@ export default function JoinGroup() {
               type="button"
               disabled={!canRetry}
               loading={loading}
-              loadingText="Joining"
               onClick={() => {
                 hasAttemptedRef.current = true;
                 tryJoinGroup();

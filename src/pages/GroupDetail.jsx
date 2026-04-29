@@ -2,12 +2,45 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as htmlToImage from "html-to-image";
 import { Copy, Check } from "lucide-react";
+import { Skeleton } from "boneyard-js/react";
 import Button from "../components/Button";
 import ApiMessage from "../components/ApiMessage";
 import Modal from "../components/Modal";
 import { useGroupDetail } from "../hooks/useGroupDetail";
 import { deleteGroup, leaveGroup } from "../services/groupsService";
 import { queryClient } from "../lib/queryClient";
+import { isBoneyardCapture } from "../lib/isBoneyardCapture";
+
+const GROUP_DETAIL_FIXTURE = {
+  name: "Paddock Masters",
+  role: "admin",
+  memberCount: 12,
+  inviteToken: "GRIDLOCK26",
+  leaderboard: [
+    { userId: "fixture-1", rank: 1, username: "PoleRunner", totalPoints: 214, lastRacePoints: 21 },
+    { userId: "fixture-2", rank: 2, username: "RacePace", totalPoints: 205, lastRacePoints: 18 },
+    { userId: "fixture-3", rank: 3, username: "ApexAce", totalPoints: 197, lastRacePoints: 15 },
+  ],
+  currentRace: {
+    name: "Japanese Grand Prix",
+    status: "upcoming",
+    submissions: [
+      { userId: "fixture-1", username: "PoleRunner", submitted: true },
+      { userId: "fixture-2", username: "RacePace", submitted: true },
+      { userId: "fixture-3", username: "ApexAce", submitted: false },
+    ],
+  },
+  raceHistory: [
+    {
+      raceId: "fixture-race-1",
+      name: "Australian Grand Prix",
+      results: [
+        { userId: "fixture-1", username: "PoleRunner", points: 25 },
+        { userId: "fixture-2", username: "RacePace", points: 18 },
+      ],
+    },
+  ],
+};
 
 const mapGroupDetailError = (error) => {
   if (error?.status === 401) return "Please sign in to view this group.";
@@ -29,6 +62,7 @@ const GroupDetail = () => {
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [actionMessage, setActionMessage] = useState(null);
+  const captureMode = isBoneyardCapture();
 
   useEffect(() => {
     if (!import.meta.env.DEV) return undefined;
@@ -41,15 +75,18 @@ const GroupDetail = () => {
   const {
     data: group,
     isError,
+    isLoading,
     error,
     refetch,
   } = useGroupDetail(groupId);
 
-  // Determine if current user is the creator
-  const isCreator = group?.role === "admin";
+  const displayGroup = captureMode ? group ?? GROUP_DETAIL_FIXTURE : group;
+  const displayIsError = captureMode ? false : isError;
+  const displayError = captureMode ? null : error;
+  const isCreator = displayGroup?.role === "admin";
 
   const downloadLeaderboard = async () => {
-    if (!exportRef.current || !group) return;
+    if (!exportRef.current || !displayGroup) return;
 
     try {
       const dataUrl = await htmlToImage.toPng(exportRef.current, {
@@ -58,7 +95,7 @@ const GroupDetail = () => {
       });
 
       const link = document.createElement("a");
-      link.download = `${group.name}-leaderboard.png`;
+      link.download = `${displayGroup.name}-leaderboard.png`;
       link.href = dataUrl;
       link.click();
     } catch (err) {
@@ -67,9 +104,9 @@ const GroupDetail = () => {
   };
 
   const handleCopyInvite = async () => {
-    if (!group?.inviteToken) return;
+    if (!displayGroup?.inviteToken) return;
     try {
-      await navigator.clipboard.writeText(group.inviteToken);
+      await navigator.clipboard.writeText(displayGroup.inviteToken);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -123,12 +160,18 @@ const GroupDetail = () => {
     }
   };
   useEffect(() => {
-    if (isError && error?.status === 403) {
+    if (!captureMode && isError && error?.status === 403) {
       navigate("/home/groups", { replace: true });
     }
-  }, [isError, error, navigate]);
+  }, [captureMode, isError, error, navigate]);
   return (
-    <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-4 sm:px-6 py-8 sm:py-10 w-full">
+    <Skeleton
+      name="group-detail-page"
+      loading={isLoading}
+      animate="pulse"
+      transition={300}
+    >
+      <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white px-4 sm:px-6 py-8 sm:py-10 w-full">
       <div className="max-w-5xl mx-auto space-y-10 sm:space-y-12">
         {/* HEADER */}
         <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-6 sm:p-10 shadow-2xl shadow-black/40">
@@ -136,11 +179,11 @@ const GroupDetail = () => {
 
 
 
-          {isError && (
+          {displayIsError && (
             <div className="space-y-4">
               <ApiMessage
                 variant="error"
-                message={mapGroupDetailError(error)}
+                message={mapGroupDetailError(displayError)}
               />
               <Button
                 type="button"
@@ -152,24 +195,24 @@ const GroupDetail = () => {
             </div>
           )}
 
-          {group && !isError && (
+          {displayGroup && !displayIsError && (
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-6">
               <div className="min-w-0">
                 <h1 className="text-2xl sm:text-4xl font-extrabold wrap-break-word">
-                  {group.name}
+                  {displayGroup.name}
                 </h1>
                 <p className="text-zinc-400 text-sm mt-2">
-                  {group.memberCount} Members
+                  {displayGroup.memberCount} Members
                 </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                {group.inviteToken && (
+                {displayGroup.inviteToken && (
                   <div className="flex items-center gap-3 text-sm bg-zinc-800/50 px-4 py-2 rounded-xl border border-zinc-700 w-full sm:w-auto justify-between sm:justify-start">
                     <div className="truncate">
                       <span>Invite Code: </span>
                       <span className="pl-5 text-[#c1a362] font-semibold">
-                        {group.inviteToken}
+                        {displayGroup.inviteToken}
                       </span>
                     </div>
 
@@ -209,7 +252,7 @@ const GroupDetail = () => {
         </div>
 
         {/* LEADERBOARD SECTION */}
-        {group && !isError && (
+        {displayGroup && !displayIsError && (
           <>
             <div>
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 sm:mb-8">
@@ -230,7 +273,7 @@ const GroupDetail = () => {
 
                 <div className="mb-6 sm:mb-8">
                   <h3 className="text-xl sm:text-2xl font-bold text-[#c1a362] wrap-break-word">
-                    {group.name}
+                    {displayGroup.name}
                   </h3>
                   <p className="text-sm text-zinc-400 mt-1">
                     Official Leaderboard
@@ -244,7 +287,7 @@ const GroupDetail = () => {
                   <span>Last Race</span>
                 </div>
 
-                {(group.leaderboard || []).map((member) => (
+                {(displayGroup.leaderboard || []).map((member) => (
                   <div
                     key={member.userId}
                     className="hidden sm:grid grid-cols-4 px-2 py-3 text-sm border-b border-zinc-800 last:border-none"
@@ -260,7 +303,7 @@ const GroupDetail = () => {
 
                 {/* MOBILE */}
                 <div className="sm:hidden space-y-4">
-                  {(group.leaderboard || []).map((member) => (
+                  {(displayGroup.leaderboard || []).map((member) => (
                     <div
                       key={member.userId}
                       className="bg-zinc-800/60 rounded-xl p-4 border border-zinc-700"
@@ -290,14 +333,14 @@ const GroupDetail = () => {
             </div>
 
             {/* EXPORT SECTION (FIXED POSITIONING) */}
-            <div className="fixed -left-2499.75 top-0">
+            <div className="fixed -left-2499.75 top-0" data-no-skeleton>
               <div ref={exportRef} className="w-225 mx-auto">
                 <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-3xl overflow-hidden p-10 shadow-2xl shadow-black/40">
                   <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
 
                   <div className="mb-8">
                     <h3 className="text-2xl font-bold text-[#c1a362]">
-                      {group.name}
+                      {displayGroup.name}
                     </h3>
                     <p className="text-sm text-zinc-400 mt-1">
                       Official Leaderboard
@@ -311,7 +354,7 @@ const GroupDetail = () => {
                     <span>Last Race</span>
                   </div>
 
-                  {(group.leaderboard || []).map((member) => (
+                  {(displayGroup.leaderboard || []).map((member) => (
                     <div
                       key={member.userId}
                       className="grid grid-cols-4 px-2 py-3 text-sm border-b border-zinc-800 last:border-none"
@@ -341,13 +384,13 @@ const GroupDetail = () => {
               <div className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-6 sm:p-10 shadow-2xl shadow-black/40 space-y-3">
                 <div className="absolute -top-1 left-0 w-full h-0.75 bg-linear-to-r from-[#c1a362] via-red-500/60 to-[#c1a362] rounded-t-3xl" />
 
-                {group.currentRace ? (
+                {displayGroup.currentRace ? (
                   <>
                     <p className="text-zinc-300 text-sm mb-4 wrap-break-word">
-                      {group.currentRace.name} ({group.currentRace.status})
+                      {displayGroup.currentRace.name} ({displayGroup.currentRace.status})
                     </p>
 
-                    {(group.currentRace.submissions || []).map((user) => (
+                    {(displayGroup.currentRace.submissions || []).map((user) => (
                       <div
                         key={user.userId}
                         className="flex justify-between text-sm"
@@ -377,11 +420,11 @@ const GroupDetail = () => {
                 Past Race Results
               </h2>
 
-              {(group.raceHistory || []).length === 0 ? (
+              {(displayGroup.raceHistory || []).length === 0 ? (
                 <p className="text-zinc-500">No completed races yet.</p>
               ) : (
                 <div className="space-y-6">
-                  {(group.raceHistory || []).map((race) => (
+                  {(displayGroup.raceHistory || []).map((race) => (
                     <div
                       key={race.raceId}
                       className="relative bg-zinc-900/70 backdrop-blur-xl border border-zinc-800 rounded-b-3xl p-6 sm:p-8 shadow-2xl shadow-black/40"
@@ -418,7 +461,7 @@ const GroupDetail = () => {
           onClose={() => setShowDeleteModal(false)}
           type="error"
           title="Delete Group"
-          message={`Are you sure you want to delete "${group?.name}"? This action cannot be undone and all members will be removed.`}
+          message={`Are you sure you want to delete "${displayGroup?.name}"? This action cannot be undone and all members will be removed.`}
           confirmLabel={actionLoading ? "Deleting..." : "Delete Group"}
           onConfirm={handleDeleteGroup}
         />
@@ -429,7 +472,7 @@ const GroupDetail = () => {
           onClose={() => setShowLeaveModal(false)}
           type="info"
           title="Leave Group"
-          message={`Are you sure you want to leave "${group?.name}"? You will need to rejoin to participate again.`}
+          message={`Are you sure you want to leave "${displayGroup?.name}"? You will need to rejoin to participate again.`}
           confirmLabel={actionLoading ? "Leaving..." : "Leave Group"}
           onConfirm={handleLeaveGroup}
         />
@@ -444,7 +487,8 @@ const GroupDetail = () => {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </Skeleton>
   );
 };
 

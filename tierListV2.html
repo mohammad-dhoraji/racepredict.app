@@ -1,0 +1,464 @@
+<!doctype html>
+
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Gridlock | F1 Tier List Builder</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Berkeley+Mono&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              outline: "#ad8883",
+              "on-background": "#e5e2e1",
+              "on-surface-variant": "#e7bdb7",
+              "tertiary-fixed-dim": "#a7caf3",
+              secondary: "#c6c6c7",
+              "on-secondary": "#2f3131",
+              primary: "#ffb4aa",
+              "surface-tint": "#ffb4aa",
+              "surface-container-high": "#2a2a2a",
+              "surface-container-lowest": "#0e0e0e",
+              "tertiary-container": "#7194bb",
+              "on-primary": "#690003",
+              "on-secondary-container": "#b4b5b5",
+              "secondary-fixed-dim": "#c6c6c7",
+              "surface-container-highest": "#353534",
+              "inverse-on-surface": "#313030",
+              error: "#ffb4ab",
+              "on-surface": "#e5e2e1",
+              "on-primary-container": "#5c0002",
+              "tertiary-fixed": "#d0e4ff",
+              "on-tertiary": "#063254",
+              "primary-fixed-dim": "#ffb4aa",
+              "on-tertiary-fixed-variant": "#25496c",
+              "inverse-primary": "#c0000a",
+              "outline-variant": "#5d3f3b",
+              "surface-dim": "#131313",
+              "surface-bright": "#3a3939",
+              "on-error": "#690005",
+              "error-container": "#93000a",
+              "on-secondary-fixed-variant": "#454747",
+              tertiary: "#a7caf3",
+              "on-error-container": "#ffdad6",
+              "secondary-container": "#454747",
+              "on-secondary-fixed": "#1a1c1c",
+              "on-tertiary-fixed": "#001d35",
+              background: "#131313",
+              "surface-container": "#201f1f",
+              "on-tertiary-container": "#002b4c",
+              "on-primary-fixed": "#410001",
+              "secondary-fixed": "#e2e2e2",
+              "primary-fixed": "#ffdad5",
+              "surface-container-low": "#1c1b1b",
+              "inverse-surface": "#e5e2e1",
+              "surface-variant": "#353534",
+              "primary-container": "#ff5545",
+              surface: "#131313",
+              "on-primary-fixed-variant": "#930005",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "1rem",
+              xl: "1.25rem",
+              full: "9999px",
+            },
+            fontFamily: {
+              headline: ["Inter"],
+              body: ["Inter"],
+              label: ["Inter"],
+              mono: ["Berkeley Mono"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+        display: inline-block;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+        white-space: nowrap;
+        direction: ltr;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      body {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        background-color: #0a0a0a;
+      }
+    </style>
+  </head>
+  <body
+    class="text-on-surface selection:bg-white selection:text-surface-container-low  "
+  >
+    <!-- Header: TopNavBar -->
+    <header class="fixed top-0 w-full z-50 bg-[#0a0a0a]/80 backdrop-blur-2xl">
+      <nav class="flex justify-between items-center px-6 py-4 w-full">
+        <div
+          class="text-lg font-bold tracking-tighter text-[#e5e2e1] uppercase font-['Inter']"
+        >
+          Gridlock
+        </div>
+        <div
+          class="hidden md:flex items-center gap-8 font-['Inter'] text-sm tracking-tight font-medium"
+        >
+          <a
+            class="text-[#ff3b30] hover:text-[#ffffff] transition-colors"
+            href="#"
+            >Construct</a
+          >
+          <a
+            class="text-[#e5e2e1]/50 hover:text-[#ffffff] transition-colors"
+            href="#"
+            >Drivers</a
+          >
+          <a
+            class="text-[#e5e2e1]/50 hover:text-[#ffffff] transition-colors"
+            href="#"
+            >Circuits</a
+          >
+          <a
+            class="text-[#e5e2e1]/50 hover:text-[#ffffff] transition-colors"
+            href="#"
+            >History</a
+          >
+        </div>
+        <div class="flex items-center gap-4">
+          <button
+            class="font-['Inter'] text-sm tracking-tight font-medium text-[#e5e2e1]/50 hover:text-[#ffffff] transition-colors scale-95 active:scale-90 transition-transform duration-200"
+          >
+            Reset
+          </button>
+          <button
+            class="bg-[#ff3b30] text-white px-5 py-2 rounded-lg font-['Inter'] text-sm tracking-tight font-semibold scale-95 active:scale-90 transition-transform duration-200"
+          >
+            Export
+          </button>
+        </div>
+      </nav>
+    </header>
+    <main class="pt-24 pb-48 px-6 max-w-7xl mx-auto">
+      <!-- Editorial Intro -->
+      <section class="mb-12">
+        <h1 class="text-6xl font-extrabold tracking-tighter mb-2 font-headline">
+          Construct
+        </h1>
+        <p class="text-on-surface/40 text-lg font-light tracking-wide max-w-xl">
+          Curate the hierarchy of the grid. Map performance against legacy
+          through a kinetic lens.
+        </p>
+      </section>
+      <!-- Tier Stack -->
+      <div class="flex flex-col gap-3">
+        <!-- Tier S -->
+        <div class="flex min-h-[140px] items-stretch group">
+          <div
+            class="w-24 flex items-center justify-center font-mono text-2xl tracking-widest text-on-surface bg-surface-container-low rounded-l-lg border-r border-surface-dim/20 text-red-500"
+          >
+            S
+          </div>
+          <div
+            class="flex-1 bg-surface-container-low rounded-r-lg p-4 flex flex-wrap gap-4 items-center"
+          >
+            <!-- Stat Card: Lewis Hamilton -->
+            <div
+              class="w-32 bg-[#1c1c1c] rounded-lg p-2 group/card cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-transparent hover:border-on-surface/5"
+            >
+              <div
+                class="aspect-square rounded-lg mb-2 overflow-hidden bg-surface-dim"
+              >
+                <img
+                  alt="Lewis Hamilton"
+                  class="w-full h-full object-cover grayscale opacity-80 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500"
+                  data-alt="Monochrome cinematic portrait of a professional racing driver in high contrast studio lighting looking focused"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAccB4CFOshX8CXxnfS6piE-SYoa6Cn6JX97wH76znWIi58zTYixow-yxx_Wj3uFrZmkWNfr0OD7rzllGbn7Ii9RqxF2zKseC4ETChN-Qx8JGh3y9JEb4xpoFabEnjycY3a2a3BwFlnx9h55SXiO-pLbC5hBQ8fIZLWAaoT6AayG-eR1HmVSYkdt6j13bJo532ucsRVKQ4BkZBJVTi6McaltHH3eFS6z8z4lgoB5ry1tu2xHC0g64lxp61Tsd1SoywpVvWL47Y2raM"
+                />
+              </div>
+              <div
+                class="text-[10px] font-mono uppercase tracking-widest text-secondary text-center"
+              >
+                Hamilton
+              </div>
+            </div>
+            <!-- Stat Card: Max Verstappen -->
+            <div
+              class="w-32 bg-[#1c1c1c] rounded-lg p-2 group/card cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-transparent hover:border-on-surface/5"
+            >
+              <div
+                class="aspect-square rounded-lg mb-2 overflow-hidden bg-surface-dim"
+              >
+                <img
+                  alt="Max Verstappen"
+                  class="w-full h-full object-cover grayscale opacity-80 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500"
+                  data-alt="High-end studio portrait of a racing athlete with sharp lighting and subtle shadows on dark background"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2Paeue_bCBsvNuLxxFJA1tbMVotRTY9VEZXgtHh3RdaOMlkFvZuESlRMxMhGQvg2fD5q9xQeTBXn3tWWZPxDpmYRxzhPAcDOrL1_AYf6c2LXEWVV5jl6-4gIsSIPtu1Qk5j5cH18IacBb9oJU1gcgrAYj8SPznTB4LqfJHs03EkWyMN6yaQHnUPTQ7P6dJ0qaxvsrq63OjDEnoThlXV57CTsdfiel8pTL_pjW4ICHf63S7-SNbS3Ncecgs3XfFLHXFCSG3JpETzM"
+                />
+              </div>
+              <div
+                class="text-[10px] font-mono uppercase tracking-widest text-secondary text-center"
+              >
+                Verstappen
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Tier A -->
+        <div class="flex min-h-[140px] items-stretch">
+          <div
+            class="w-24 flex items-center justify-center font-mono text-2xl tracking-widest text-on-surface/70 bg-surface-container-low rounded-l-lg border-r border-surface-dim/20 text-orange-500"
+          >
+            A
+          </div>
+          <div
+            class="flex-1 bg-surface-container-low rounded-r-lg p-4 flex flex-wrap gap-4 items-center"
+          >
+            <!-- Stat Card: Fernando Alonso -->
+            <div
+              class="w-32 bg-[#1c1c1c] rounded-lg p-2 group/card cursor-pointer transition-all duration-300 hover:bg-surface-container-high"
+            >
+              <div
+                class="aspect-square rounded-lg mb-2 overflow-hidden bg-surface-dim"
+              >
+                <img
+                  alt="Fernando Alonso"
+                  class="w-full h-full object-cover grayscale opacity-80 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500"
+                  data-alt="Close-up of a focused race car driver in a helmet with dramatic mood lighting"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeEkkbi8TjrRJ7igLDx61Uy_rPyDzrpD6LKFitOm6QgoiKzYLO3ygljZbQ8yiyj2AShaM7O0ZttHg-Kj5Q5srhI7Psm2CHUCHQ_Hxhd4nMdAoZ9HTeE8k51zUYQjkWM2772KJeyfDRzQBHtOhCXeabRIyT2-L0afMZ0YB1ZmAtxLCgbJSs5q6X3OsQi2w1Mt_jM5X3-9IPuacBPlCKNJc8MvcIVGCPEF4CRKZeWmC2FbGZQ0nwuCw0QVlN9728HCilBoyXtfM0HSk"
+                />
+              </div>
+              <div
+                class="text-[10px] font-mono uppercase tracking-widest text-secondary text-center"
+              >
+                Alonso
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Tier B -->
+        <div class="flex min-h-[140px] items-stretch">
+          <div
+            class="w-24 flex items-center justify-center font-mono text-2xl tracking-widest text-on-surface/50 bg-surface-container-low rounded-l-lg border-r border-surface-dim/20 text-yellow-500"
+          >
+            B
+          </div>
+          <div
+            class="flex-1 bg-surface-container-low rounded-r-lg p-4 flex flex-wrap gap-4 items-center"
+          >
+            <div
+              class="text-on-surface/10 font-mono text-xs uppercase tracking-tighter"
+            >
+              Drop assets here
+            </div>
+          </div>
+        </div>
+        <!-- Tier C -->
+        <div class="flex min-h-[140px] items-stretch">
+          <div
+            class="w-24 flex items-center justify-center font-mono text-2xl tracking-widest  bg-surface-container-low rounded-l-lg border-r border-surface-dim/20 text-green-500"
+          >
+            C
+          </div>
+          <div
+            class="flex-1 bg-surface-container-low rounded-r-lg p-4 flex flex-wrap gap-4 items-center"
+          ></div>
+        </div>
+        <!-- Tier D -->
+        <div class="flex min-h-[140px] items-stretch">
+          <div
+            class="w-24 flex items-center justify-center font-mono text-2xl tracking-widest  bg-surface-container-low rounded-l-lg border-r border-surface-dim/20 text-blue-500"
+          >
+            D
+          </div>
+          <div
+            class="flex-1 bg-surface-container-low rounded-r-lg p-4 flex flex-wrap gap-4 items-center"
+          ></div>
+        </div>
+      </div>
+      <!-- Driver Pool Section -->
+      <section class="mt-20">
+        <div class="flex items-center justify-between mb-6">
+          <h3
+            class="font-mono text-xs tracking-[0.2em] uppercase text-on-surface/40"
+          >
+            Unassigned Pool
+          </h3>
+          <span class="text-on-surface/20 font-mono text-[10px]"
+            >17 DRIVERS REMAINING</span
+          >
+        </div>
+        <div class="flex gap-6 overflow-x-auto pb-8 mask-gradient">
+          <!-- Driver Cards in Pool -->
+          <div
+            class="flex-shrink-0 w-32 bg-[#1c1c1c] rounded-lg p-2 group/card cursor-grab active:cursor-grabbing transition-all duration-300"
+          >
+            <div
+              class="aspect-square rounded-lg mb-2 overflow-hidden bg-surface-dim"
+            >
+              <img
+                alt="Charles Leclerc"
+                class="w-full h-full object-cover grayscale opacity-80 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500"
+                data-alt="Artistic b&amp;w studio shot of a modern athlete with subtle lens flare"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJrCL6c8Qc-0zhnLVRo4kSWBU53LLt_2IGLHUC2AaSMzkd4IhPBVTWtbjLD5xDzHtPxxyKA2XGfKY7gjrXc_Hfl46OEqo3-QZ2TyHR1kM8FeyxTEETrgW8M-9oxuhl1n_KrQJkKSo0QtcNIyhOOKvW_aZyydJbntGvC9ZEYdHZSUi_AVJNIro55ac1eF89s1A5DVNGSiVumz8bj9EzX5fRQbLLtEnl6K8_kluB-5qmjt1SHI69-j69AKpdLUz9cRefE_WMgIO7n8c"
+              />
+            </div>
+            <div
+              class="text-[10px] font-mono uppercase tracking-widest text-secondary text-center"
+            >
+              Leclerc
+            </div>
+          </div>
+          <div
+            class="flex-shrink-0 w-32 bg-[#1c1c1c] rounded-lg p-2 group/card cursor-grab active:cursor-grabbing transition-all duration-300"
+          >
+            <div
+              class="aspect-square rounded-lg mb-2 overflow-hidden bg-surface-dim"
+            >
+              <img
+                alt="Lando Norris"
+                class="w-full h-full object-cover grayscale opacity-80 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500"
+                data-alt="Professional sports editorial portrait of a young man with moody atmosphere and dark clothing"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMiRmuaIDq2Bnj-yAmXmcS21Qd59M-od2y3yoztXLaGEwtxsv8dPsJIsEfFNLCS9wgWd1ApnksCCNSSYL111yx5UucJCmEV5QxseF7UH-juUHVQsI8z_ps33Q3E3ltV4YPljQvW6Kg6pdXl1s02kqGiVJ067tj9nsO8I4DCDEKMJzNZQQE-mtp9GxgTTUj2Mu5FvCEzN_OlEMbmYi98qveGyhZ_Mf5b9I24UvZq2ZXfJXtjxNcwIfpHougQ7gmwGXA_utGIghVXr8"
+              />
+            </div>
+            <div
+              class="text-[10px] font-mono uppercase tracking-widest text-secondary text-center"
+            >
+              Norris
+            </div>
+          </div>
+          <div
+            class="flex-shrink-0 w-32 bg-[#1c1c1c] rounded-lg p-2 group/card cursor-grab active:cursor-grabbing transition-all duration-300"
+          >
+            <div
+              class="aspect-square rounded-lg mb-2 overflow-hidden bg-surface-dim"
+            >
+              <img
+                alt="George Russell"
+                class="w-full h-full object-cover grayscale opacity-80 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500"
+                data-alt="Soft focused studio portrait of an athlete in profile against a dark gray wall"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4t6gg0xwHMnCCV55QtMlcV-AoeTbRsLB_v2F3fWNCANY2uF3Ovh2oEasIj8RaOp3sSFoZg_THyndHa59rf_TatE222acjg_iqD8Ykg9enfCZc0c3TZjITxCuvHS1IYW1OHTQ2cfjAiOtZ55jRtxzjcJxz8VBGr5eNxEZ3UHzbr_-Pbjh8yBSafSXTLXvBZ6KLal20TQMI7GQPyPs-8fx_Is4YpKcNeOtceZmtSet47WpDCVsAeP0P4SoI9Lfbc68Pl_LOYglMfVc"
+              />
+            </div>
+            <div
+              class="text-[10px] font-mono uppercase tracking-widest text-secondary text-center"
+            >
+              Russell
+            </div>
+          </div>
+          <div
+            class="flex-shrink-0 w-32 bg-[#1c1c1c] rounded-lg p-2 group/card cursor-grab active:cursor-grabbing transition-all duration-300"
+          >
+            <div
+              class="aspect-square rounded-lg mb-2 overflow-hidden bg-surface-dim"
+            >
+              <img
+                alt="Carlos Sainz"
+                class="w-full h-full object-cover grayscale opacity-80 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500"
+                data-alt="Cinematic close-up of a racing professional with intense lighting and deep shadows"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJUa4NEeHzPS8gvZm5rVX0AI9nWq7w2Gn_VQMwgfP95LqtWKwXPjIG8rYyhvjgEmY_8Rn0fdc83T2ufrtfAdyQvNIuRE3HMTd4FflrrX2QsFktGld9FEdxmFdHBTrO60IPIPMX_P61KawUfWKcjfJkJgwV_AV4V44-kB85kLtIHPtr6cW4iv4Lykf8n9DE6_9bSbBjSNjyd1iOprL51lgQw9S-j6dWY7wFmdbEE8J19wdkeqkE2OMAeEFCLKMCgmrDLZa0gWlDltk"
+              />
+            </div>
+            <div
+              class="text-[10px] font-mono uppercase tracking-widest text-secondary text-center"
+            >
+              Sainz
+            </div>
+          </div>
+          <div
+            class="flex-shrink-0 w-32 bg-[#1c1c1c] rounded-lg p-2 group/card cursor-grab active:cursor-grabbing transition-all duration-300"
+          >
+            <div
+              class="aspect-square rounded-lg mb-2 overflow-hidden bg-surface-dim"
+            >
+              <img
+                alt="Oscar Piastri"
+                class="w-full h-full object-cover grayscale opacity-80 group-hover/card:grayscale-0 group-hover/card:opacity-100 transition-all duration-500"
+                data-alt="Modern athletic headshot with clean minimalist aesthetic and desaturated colors"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkZt0LD5PrZzy5ERLutfUxpHw1nA3r6nEqJtews2y_0_XbYMCyK6db-AiD8HMPSyokVfPiR-BehQYbbPZ7gsdOc5EQ9MRJzvh0Ixr01emqRgoGLxDIwk6PXhDwz6U-MwkGQuNhOYoQp2o3DGpLYDcLKa4IGuV8rQg4L18YMViIh3G8-1yjK8yGSdN-Rkgd61nCLqujDz_pYuL1HyE49win2hg3dsMJHWCvXe_uGfcQpWgT59ZB9t4e2fpwSg6nQzLF3WOf_25bUMA"
+              />
+            </div>
+            <div
+              class="text-[10px] font-mono uppercase tracking-widest text-secondary text-center"
+            >
+              Piastri
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <!-- Navigation Shell: BottomNavBar -->
+    <nav
+      class="fixed bottom-8 left-0 right-0 flex justify-around items-center px-4 py-3 z-50 bg-[#1c1c1c]/70 backdrop-blur-3xl w-[90%] max-w-md mx-auto rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-none"
+    >
+      <a
+        class="flex flex-col items-center justify-center text-[#ff3b30] scale-110 duration-300 ease-out"
+        href="#"
+      >
+        <span
+          class="material-symbols-outlined mb-1"
+          style="font-variation-settings: &quot;FILL&quot; 1"
+          >edit_note</span
+        >
+        <span
+          class="font-['Berkeley_Mono'] text-[10px] tracking-widest uppercase"
+          >Construct</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-[#e5e2e1]/40 hover:text-[#e5e2e1] transition-colors duration-300"
+        href="#"
+      >
+        <span class="material-symbols-outlined mb-1">sports_motorsports</span>
+        <span
+          class="font-['Berkeley_Mono'] text-[10px] tracking-widest uppercase"
+          >Drivers</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-[#e5e2e1]/40 hover:text-[#e5e2e1] transition-colors duration-300"
+        href="#"
+      >
+        <span class="material-symbols-outlined mb-1">route</span>
+        <span
+          class="font-['Berkeley_Mono'] text-[10px] tracking-widest uppercase"
+          >Circuits</span
+        >
+      </a>
+      <a
+        class="flex flex-col items-center justify-center text-[#e5e2e1]/40 hover:text-[#e5e2e1] transition-colors duration-300"
+        href="#"
+      >
+        <span class="material-symbols-outlined mb-1">history</span>
+        <span
+          class="font-['Berkeley_Mono'] text-[10px] tracking-widest uppercase"
+          >History</span
+        >
+      </a>
+    </nav>
+  </body>
+</html>

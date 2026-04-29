@@ -1,9 +1,9 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { GridLockLogo } from "../components/branding";
-import Loader from "../components/Loader";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { signIn, signUp, signInWithGoogle } from "../services/authService";
+import RouteGateLoader from "../components/RouteGateLoader";
+import { GridLockLogo } from "../components/branding";
 import { useAuth } from "../context/AuthContext";
+import { signIn, signInWithGoogle, signUp } from "../services/authService";
 
 const sanitizeRedirectPath = (path) => {
   if (typeof path !== "string" || path.length === 0) return "/home";
@@ -86,7 +86,7 @@ function Login() {
   };
 
   if (authLoading) {
-    return <Loader fullScreen />;
+    return <RouteGateLoader subtitle="Preparing sign-in..." />;
   }
 
   return (
@@ -108,7 +108,7 @@ function Login() {
           </div>
 
           <div className="relative z-10 text-sm text-zinc-300">
-            © 2026 Gridlock
+            (c) 2026 Gridlock
           </div>
         </div>
 
@@ -151,20 +151,7 @@ function Login() {
                 d="M24 48c6.5 0 12-2.1 16-5.7l-7.5-5.8c-2.1 1.4-4.8 2.3-8.5 2.3-6.3 0-11.7-3.6-13.8-8.8l-7.3 5.7C6.6 42.2 14.6 48 24 48z"
               />
             </svg>
-            {isGoogleLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <Loader
-                  as="span"
-                  size="small"
-                  iconMode="light"
-                  showProgress={false}
-                  showText={false}
-                />
-                <span>Connecting</span>
-              </span>
-            ) : (
-              "Continue with Google"
-            )}
+            Continue with Google
           </button>
 
           <div className="relative flex items-center mb-6">
@@ -227,16 +214,7 @@ function Login() {
               disabled={formLoading}
               className="w-full py-3 bg-red-600 hover:bg-red-700 rounded-xl font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-60"
             >
-              {formLoading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader as="span" size="small" showProgress={false} showText={false} />
-                  <span>{isLogin ? "Signing in" : "Creating account"}</span>
-                </span>
-              ) : isLogin ? (
-                "Login"
-              ) : (
-                "Sign Up"
-              )}
+              {isLogin ? "Login" : "Sign Up"}
             </button>
           </form>
 

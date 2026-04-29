@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg
+  width="140"
+  height="120"
+  viewBox="0 0 140 120"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+>
+  <title>GridLock icon</title>
+
+  <g transform="translate(40 15) skewX(-15)">
+    
+    <!-- Left Spine -->
+    <path
+      d="M40 15 L20 15 L5 30 L5 69 L20 84 L40 84 L40 69 L25 69 L20 64 L20 35 L25 30 L40 30 Z"
+      fill="#ffffff"
+    />
+
+    <!-- Top Slot -->
+    <path
+      d="M45 15 L90 15 L80 30 L45 30 Z"
+      fill="#ff3b30"
+    />
+
+    <!-- Bottom Block -->
+    <path
+      d="M45 45 L84 45 L58 84 L45 84 L45 69 L55 69 L63 57 L45 57 Z"
+      fill="#ffffff"
+    />
+
+  </g>
+</svg>

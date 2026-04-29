@@ -17,7 +17,7 @@ const driverColors = {
   "Charles Leclerc": "#E80020",  // Ferrari red
   "Lando Norris": "#FF8700",     // McLaren orange
   "George Russell": "#27F4D2",   // Mercedes
-  "Kimi Antonelli": "#27F4D2"    // placeholder (Merc junior)
+  "Kimi Antonelli": "#27F4D2"
 };
 
 const RacePredictionHeroAnimation = ({ trackName = "this weekend", className = "" }) => {
@@ -100,9 +100,6 @@ const RacePredictionHeroAnimation = ({ trackName = "this weekend", className = "
           rotationInterval={2200}
         />
       </motion.div>
-
-      {/* Subtle glow effect */}
-      {/* <div className="absolute -inset-2 bg-linear-to-r from-red-500/5 via-transparent to-red-500/5 rounded-3xl blur-xl opacity-75 animate-pulse" /> */}
     </motion.div>
   );
 };

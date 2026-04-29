@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Skeleton } from "boneyard-js/react";
 import PageWrapper from "../components/PageWrapper";
 import Button from "../components/Button";
 import CalendarModal from "../components/CalendarModal";
@@ -12,9 +13,77 @@ import NextRaceCard from "../features/races/NextRaceCard";
 import { useLeaderboard } from "../hooks/useLeaderboard";
 import { useProfile } from "../hooks/useProfile";
 
+const HOME_LEADERBOARD_FIXTURE = [
+  { rank: 1, name: "VerstappenVision", points: 214 },
+  { rank: 2, name: "ApexHunter", points: 201 },
+  { rank: 3, name: "LateBraker", points: 198 },
+  { rank: 4, name: "MonzaMode", points: 191 },
+  { rank: 5, name: "SlipstreamSam", points: 186 },
+];
+
+const HOME_STATS_FIXTURE = {
+  totalPoints: 184,
+  globalRank: 12,
+  lastRaceScore: 18,
+};
+
 function formatLastRaceScore(score) {
   if (score == null) return "-";
   return score > 0 ? `+${score}` : `${score}`;
+}
+
+function LeaderboardPreview({ items }) {
+  return (
+    <div className="space-y-2.5">
+      {items.map((entry, index) => (
+        <div
+          key={entry.rank || index}
+          className="flex items-center justify-between rounded-xl border border-zinc-800/60 bg-zinc-950/40 px-3 py-2.5"
+        >
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className={`w-8 text-sm font-semibold ${
+                entry.rank === 1 ? "text-[#c1a362]" : "text-zinc-500"
+              }`}
+            >
+              #{entry.rank}
+            </span>
+            <span className="truncate text-sm font-medium text-zinc-200">
+              {entry.name}
+            </span>
+          </div>
+          <span className="text-sm font-semibold text-zinc-100">
+            {entry.points} pts
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function PerformanceSummary({ totalPoints, rank, lastRace }) {
+  return (
+    <div className="space-y-3">
+      <div className="rounded-xl border border-zinc-800/70 bg-zinc-950/35 px-4 py-3">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
+          Total Points
+        </p>
+        <p className="mt-1 text-2xl font-semibold text-zinc-100">{totalPoints}</p>
+      </div>
+      <div className="rounded-xl border border-zinc-800/70 bg-zinc-950/35 px-4 py-3">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
+          Global Rank
+        </p>
+        <p className="mt-1 text-2xl font-semibold text-zinc-100">{rank}</p>
+      </div>
+      <div className="rounded-xl border border-zinc-800/70 bg-zinc-950/35 px-4 py-3">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
+          Last Race
+        </p>
+        <p className="mt-1 text-2xl font-semibold text-emerald-400">{lastRace}</p>
+      </div>
+    </div>
+  );
 }
 
 function Home() {
@@ -48,6 +117,9 @@ function Home() {
   const rank = stats?.globalRank == null ? "-" : `#${stats.globalRank}`;
   const lastRace = formatLastRaceScore(stats?.lastRaceScore);
 
+  const fixtureRank = `#${HOME_STATS_FIXTURE.globalRank}`;
+  const fixtureLastRace = formatLastRaceScore(HOME_STATS_FIXTURE.lastRaceScore);
+
   return (
     <PageWrapper>
       <div className="min-h-screen bg-linear-to-b from-neutral-800 via-neutral-950 to-black text-white w-full px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
@@ -67,16 +139,15 @@ function Home() {
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Button
-                  className="rounded-lg border-[#b2132d]  bg-[#b2132d] hover:bg-[#8b0e23] px-7 py-2.5 text-[15px] tracking-[0.18em] text-white  hover:text-white hover:shadow-none"
+                  className="rounded-lg border-[#b2132d] bg-[#b2132d] hover:bg-[#8b0e23] px-7 py-2.5 text-[15px] tracking-[0.18em] text-white hover:text-white hover:shadow-none"
                   onClick={() => navigate("/home/predict")}
                 >
                   Make Prediction
                 </Button>
-               
               </div>
             </div>
 
-            <RacePredictionHeroAnimation 
+            <RacePredictionHeroAnimation
               trackName={race?.name || "this weekend"}
             />
           </div>
@@ -107,50 +178,26 @@ function Home() {
               </button>
             </div>
 
-            {topLoading ? (
-              <div className="space-y-2.5">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-11 animate-pulse rounded-xl bg-zinc-800/55"
-                  />
-                ))}
-              </div>
-            ) : topError ? (
-              <ErrorMessage
-                message={topError.message || "Failed to load leaderboard."}
-                onRetry={refetchTop}
-              />
-            ) : topItems?.length ? (
-              <div className="space-y-2.5">
-                {topItems.map((entry, index) => (
-                  <div
-                    key={entry.rank || index}
-                    className="flex items-center justify-between rounded-xl border border-zinc-800/60 bg-zinc-950/40 px-3 py-2.5"
-                  >
-                    <div className="flex min-w-0 items-center gap-3">
-                      <span
-                        className={`w-8 text-sm font-semibold ${
-                          entry.rank === 1 ? "text-[#c1a362]" : "text-zinc-500"
-                        }`}
-                      >
-                        #{entry.rank}
-                      </span>
-                      <span className="truncate text-sm font-medium text-zinc-200">
-                        {entry.name}
-                      </span>
-                    </div>
-                    <span className="text-sm font-semibold text-zinc-100">
-                      {entry.points} pts
-                    </span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="py-6 text-sm text-zinc-400">
-                Leaderboard data is not available yet.
-              </p>
-            )}
+            <Skeleton
+              name="home-leaderboard-preview"
+              loading={topLoading}
+              animate="pulse"
+              transition={300}
+              fixture={<LeaderboardPreview items={HOME_LEADERBOARD_FIXTURE} />}
+            >
+              {topError ? (
+                <ErrorMessage
+                  message={topError.message || "Failed to load leaderboard."}
+                  onRetry={refetchTop}
+                />
+              ) : topItems?.length ? (
+                <LeaderboardPreview items={topItems} />
+              ) : (
+                <p className="py-6 text-sm text-zinc-400">
+                  Leaderboard data is not available yet.
+                </p>
+              )}
+            </Skeleton>
           </article>
 
           <article className="rounded-2xl border border-zinc-800/80 bg-zinc-900/45 p-5 sm:p-6">
@@ -167,44 +214,34 @@ function Home() {
               </button>
             </div>
 
-            {statsLoading ? (
-              <div className="space-y-3">
-                {Array.from({ length: 3 }).map((_, index) => (
-                  <div
-                    key={index}
-                    className="h-14 animate-pulse rounded-xl bg-zinc-800/55"
-                  />
-                ))}
-              </div>
-            ) : statsError ? (
-              <ErrorMessage
-                message={statsError.message || "Failed to load stats."}
-                onRetry={refetchStats}
-              />
-            ) : !stats ? (
-              <p className="py-6 text-sm text-zinc-400">Stats are not available yet.</p>
-            ) : (
-              <div className="space-y-3">
-                <div className="rounded-xl border border-zinc-800/70 bg-zinc-950/35 px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
-                    Total Points
-                  </p>
-                  <p className="mt-1 text-2xl font-semibold text-zinc-100">{totalPoints}</p>
-                </div>
-                <div className="rounded-xl border border-zinc-800/70 bg-zinc-950/35 px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
-                    Global Rank
-                  </p>
-                  <p className="mt-1 text-2xl font-semibold text-zinc-100">{rank}</p>
-                </div>
-                <div className="rounded-xl border border-zinc-800/70 bg-zinc-950/35 px-4 py-3">
-                  <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">
-                    Last Race
-                  </p>
-                  <p className="mt-1 text-2xl font-semibold text-emerald-400">{lastRace}</p>
-                </div>
-              </div>
-            )}
+            <Skeleton
+              name="home-performance-stats"
+              loading={statsLoading}
+              animate="pulse"
+              transition={300}
+              fixture={
+                <PerformanceSummary
+                  totalPoints={HOME_STATS_FIXTURE.totalPoints}
+                  rank={fixtureRank}
+                  lastRace={fixtureLastRace}
+                />
+              }
+            >
+              {statsError ? (
+                <ErrorMessage
+                  message={statsError.message || "Failed to load stats."}
+                  onRetry={refetchStats}
+                />
+              ) : !stats ? (
+                <p className="py-6 text-sm text-zinc-400">Stats are not available yet.</p>
+              ) : (
+                <PerformanceSummary
+                  totalPoints={totalPoints}
+                  rank={rank}
+                  lastRace={lastRace}
+                />
+              )}
+            </Skeleton>
           </article>
         </section>
       </div>

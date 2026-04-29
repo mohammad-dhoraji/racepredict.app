@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
-import Loader from "../components/Loader";
 
 function Onboarding() {
   
@@ -164,14 +163,7 @@ function Onboarding() {
           disabled={loading}
           className="w-full py-3 bg-linear-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 active:scale-[0.99] transition-all rounded-xl font-semibold shadow-lg shadow-red-600/20 disabled:opacity-60"
         >
-          {loading ? (
-            <span className="flex items-center justify-center gap-2">
-              <Loader as="span" size="small" showProgress={false} showText={false} />
-              <span>Saving profile</span>
-            </span>
-          ) : (
-            "Continue to Profile"
-          )}
+          Continue to Profile
         </button>
       </form>
     </div>
